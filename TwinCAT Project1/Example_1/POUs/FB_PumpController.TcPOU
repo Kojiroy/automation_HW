@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_PumpController" Id="{a50fad6d-a003-4691-b885-4dda779a3353}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PumpController
+VAR_INPUT
+	nTargetPressure : USINT := 9; // Volts
+	nMaximumPressure : USINT := 10;
+	nMinimumPressure : USINT := 8;
+END_VAR
+VAR_OUTPUT
+	bPumpState : BOOL := FALSE;
+END_VAR
+VAR
+	nHysteresis : REAL := 0.5;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Run" Id="{eeca5ea1-f0a1-4ca1-9d59-493b90ef8339}">
+      <Declaration><![CDATA[METHOD Run
+VAR_INPUT
+	bState : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bState THEN
+	IF GVL_VAR.nPressure < nTargetPressure-nHysteresis OR GVL_VAR.nPressure < nMinimumPressure-nHysteresis THEN
+		bPumpState := TRUE;
+	ELSIF GVL_VAR.nPressure > nTargetPressure+nHysteresis OR GVL_VAR.nPressure > nMaximumPressure+nHysteresis THEN
+		bPumpState := FALSE;
+	END_IF
+ELSE
+	bPumpState := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_PumpController">
+      <LineId Id="43" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_PumpController.Run">
+      <LineId Id="48" Count="7" />
+      <LineId Id="21" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

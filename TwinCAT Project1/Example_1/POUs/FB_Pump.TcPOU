@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Pump" Id="{2189f6e3-949f-4eb4-811c-6a2452780df7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
+VAR_OUTPUT
+	nPressure: INT; // [Volts]
+END_VAR
+VAR
+	// bRelayOn AT %Q* : BOOL := FALSE; // True = On
+	bRelayOn : BOOL := FALSE;
+	// nCurrentPressure AT %I* : REAL; // Volts
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="SetRelay" Id="{ef407a0f-9ab4-4891-b141-81e8459e209e}">
+      <Declaration><![CDATA[METHOD PUBLIC SetRelay : BOOL
+VAR_INPUT
+	bRelayState : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bRelayOn := bRelayState;
+SetRelay := TRUE;
+
+// For Simulation
+IF bRelayOn THEN
+	GVL_VAR.bPump := TRUE;
+ELSE
+	GVL_VAR.bPump := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Pump">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.SetRelay">
+      <LineId Id="21" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="34" Count="4" />
+      <LineId Id="33" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

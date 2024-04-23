@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SimulatedIO" Id="{0dda3bf4-0ef3-4e58-b3bf-1d433ae1dc6e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SimulatedIO
+VAR_OUTPUT
+	bRelayOn : BOOL := FALSE;
+END_VAR
+VAR CONSTANT
+	PUMP_GAIN : REAL := 0.01;
+	PASSIVE_LOSS : REAL := 0.001;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF GVL_VAR.bPump THEN
+	GVL_VAR.nPressure := GVL_VAR.nPressure + PUMP_GAIN;
+ELSIF GVL_VAR.nPressure > 1 THEN
+	GVL_VAR.nPressure := GVL_VAR.nPressure - PASSIVE_LOSS;
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="FB_SimulatedIO">
+      <LineId Id="9" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{4806e156-ebbf-4070-8291-7b3f5e6f80bf}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	// Objects
+	Pump : FB_Pump;
+	PumpController : FB_PumpController := (nTargetPressure := TARGET_PRESSURE, nMaximumPressure := MAXIMUM_PRESSURE,
+		nMinimumPressure := MINIMUM_PRESSURE);
+	SimulatedIO : FB_SimulatedIO;
+	
+	// Main Loop Variables
+	bTurnPumpControllerOn : BOOL := FALSE;
+	bPumpState : BOOL := FALSE;
+	bEmergencyStopPump : BOOL := FALSE;
+	sState : STRING(20) := 'IDLE';
+END_VAR
+VAR CONSTANT
+	MAXIMUM_PRESSURE : USINT := 10;
+	MINIMUM_PRESSURE : USINT := 8;
+	TARGET_PRESSURE : USINT := 9;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF NOT bEmergencyStopPump THEN
+	PumpController.Run(bTurnPumpControllerOn);
+	bPumpState := PumpController.bPumpState;
+	Pump.SetRelay(bPumpState);
+	sState := 'RUNNING';
+ELSE
+	sState := 'E_STOPPED';
+	Pump.SetRelay(FALSE);
+END_IF
+
+SimulatedIO();]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="119" Count="0" />
+      <LineId Id="110" Count="1" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="117" Count="1" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="93" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

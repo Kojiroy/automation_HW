@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_PressureData" Id="{f1c3cffc-7ed5-4968-bc48-2b3c39dc7bcc}">
+    <Declaration><![CDATA[TYPE ST_PressureData :
+STRUCT
+	nPressure : UDINT;
+	dtTimestamp : DATE_AND_TIME;
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>
