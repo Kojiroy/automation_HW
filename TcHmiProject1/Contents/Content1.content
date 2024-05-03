@@ -6,4 +6,70 @@
   "color": "rgba(51, 127, 208, 1)"
 }
 </script>
+<div id="TcHmiTrendLineChart" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTrendLineChart" data-tchmi-end="Latest" data-tchmi-height="500" data-tchmi-height-unit="px" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-start="First" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="800" data-tchmi-width-unit="px" data-tchmi-x-axis-name="x-axis 1" data-tchmi-x-sub-tick-steps="4" data-tchmi-y-sub-tick-steps="4" data-tchmi-interval="1000" data-tchmi-show-menu-bar="true">
+<script data-tchmi-target-attribute="data-tchmi-y-axis" type="application/json">
+[
+  {
+    "id": 1,
+    "showAxis": true,
+    "position": "Left",
+    "mainTickMinValue": 0.0,
+    "mainTickMaxValue": 10.0,
+    "showLabels": true,
+    "showAxisName": true,
+    "axisName": "y-axis 1",
+    "axisNameFontFamily": "",
+    "axisNameFontSize": 15,
+    "axisNameFontSizeUnit": "px",
+    "axisNameFontWeight": "Bold",
+    "decimalPlaces": 2,
+    "unit": "",
+    "autoScaling": false,
+    "logarithmicScale": false,
+    "axisLabeling": "Number",
+    "labelFontColor": {
+      "color": "rgba(198, 43, 43, 1)"
+    },
+    "axisColor": {
+      "color": "rgba(198, 43, 43, 1)"
+    },
+    "axisNameFontColor": {
+      "color": "rgba(198, 43, 43, 1)"
+    }
+  }
+]
+</script>
+
+
+<script data-tchmi-target-attribute="data-tchmi-line-graph-descriptions" type="application/json">
+[
+  {
+    "yAxisId": 1,
+    "legendName": null,
+    "scaleFactor": 1.0,
+    "showAxis": true,
+    "lineWidth": 1,
+    "pointDot": false,
+    "pointDotRadius": 3,
+    "pointDotStrokeWidth": 1,
+    "lineColor": {
+      "color": "rgba(231, 77, 77, 1)"
+    },
+    "pointDotFillColor": {
+      "color": "rgba(13, 60, 170, 1)"
+    },
+    "pointDotStrokeColor": {
+      "color": "rgba(231, 77, 77, 1)"
+    },
+    "pointDotInStopMode": true,
+    "fillMode": "None",
+    "fillColor": {
+      "color": "rgba(231, 77, 77, 1)"
+    },
+    "fillTransparency": 50.0,
+    "symbol": "PLC1.GVL_Var.nPressure"
+  }
+]
+</script>
+</div>
 </div>

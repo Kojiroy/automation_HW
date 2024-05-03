@@ -9,6 +9,12 @@ VAR
 		nMinimumPressure := MINIMUM_PRESSURE);
 	SimulatedIO : FB_SimulatedIO;
 	
+	// Variables for Graph
+	aGraphPoints : ARRAY[1..1, 1..1000] OF ST_Point;
+	nPollDelay : UINT := 10; 
+	nCurrentPoint : INT := 1;
+	nPollCount : UINT := 0;
+	
 	// Main Loop Variables
 	bTurnPumpControllerOn : BOOL := FALSE;
 	bPumpState : BOOL := FALSE;
@@ -35,6 +41,19 @@ ELSE
 	Pump.SetRelay(FALSE);
 END_IF
 
+// Save pressure data for graph
+IF nCurrentPoint > 1000 THEN
+	nCurrentPoint := 2;
+	nPollCount := 2;
+ELSIF nPollCount > 9 THEN
+	aGraphPoints[1, nCurrentPoint].x := nCurrentPoint;
+	aGraphPoints[1, nCurrentPoint].y := GVL_Var.nPressure;
+	nPollCount := 0;
+	nCurrentPoint := 1 + nCurrentPoint;
+ELSE
+	nPollCount := nPollCount + 1;
+END_IF
+
 SimulatedIO();]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
@@ -47,7 +66,16 @@ SimulatedIO();]]></ST>
       <LineId Id="116" Count="0" />
       <LineId Id="138" Count="0" />
       <LineId Id="117" Count="1" />
-      <LineId Id="94" Count="0" />
+      <LineId Id="191" Count="1" />
+      <LineId Id="214" Count="2" />
+      <LineId Id="202" Count="0" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="206" Count="0" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="209" Count="1" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="208" Count="0" />
       <LineId Id="93" Count="0" />
     </LineIds>
   </POU>

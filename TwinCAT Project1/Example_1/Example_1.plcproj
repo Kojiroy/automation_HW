@@ -18,6 +18,9 @@
     <LibraryReferences>{b48ae351-9b91-40a0-9c2d-6f757a58af91}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DUTs\ST_Point.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\ST_PressureData.TcDUT">
       <SubType>Code</SubType>
     </Compile>

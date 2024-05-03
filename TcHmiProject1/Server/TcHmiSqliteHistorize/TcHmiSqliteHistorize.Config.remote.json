@@ -1,0 +1,13 @@
+{
+    "enableBackup": false,
+    "historizedSymbolList": {
+        "PLC1.GVL_Var.nPressure": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        }
+    },
+    "inMemory": false,
+    "maxBackups": 1
+}

@@ -27,7 +27,143 @@
     "DEFAULTTIMEFORMATLOCALE": "client",
     "DEFAULTTIMEZONE": "client",
     "DEFAULTUSERGROUP": "__SystemUsers",
-    "DEFINITIONS": {},
+    "DEFINITIONS": {
+        "PLC1.ARRAY_1..1_1..1000_OF-ST_Point": {
+            "displayAsMatrix": 2,
+            "items": {
+                "allowMapping": false,
+                "items": {
+                    "$ref": "#/definitions/PLC1.ST_Point"
+                },
+                "maxItems": 1000,
+                "minItems": 1000,
+                "startOffset": 1,
+                "type": "array"
+            },
+            "maxItems": 1,
+            "minItems": 1,
+            "startOffset": 1,
+            "type": "array"
+        },
+        "PLC1.ARRAY_1..1_1..1000_OF-ST_PressureData": {
+            "displayAsMatrix": 2,
+            "items": {
+                "allowMapping": false,
+                "items": {
+                    "$ref": "#/definitions/PLC1.ST_PressureData"
+                },
+                "maxItems": 1000,
+                "minItems": 1000,
+                "startOffset": 1,
+                "type": "array"
+            },
+            "maxItems": 1,
+            "minItems": 1,
+            "startOffset": 1,
+            "type": "array"
+        },
+        "PLC1.ARRAY_1..2_1..1000_OF-ST_PressureData": {
+            "displayAsMatrix": 2,
+            "items": {
+                "allowMapping": false,
+                "items": {
+                    "$ref": "#/definitions/PLC1.ST_PressureData"
+                },
+                "maxItems": 1000,
+                "minItems": 1000,
+                "startOffset": 1,
+                "type": "array"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "startOffset": 1,
+            "type": "array"
+        },
+        "PLC1.ARRAY_1..2_1..100_OF-INT": {
+            "displayAsMatrix": 2,
+            "items": {
+                "allowMapping": false,
+                "items": {
+                    "$ref": "tchmi:general#/definitions/INT"
+                },
+                "maxItems": 100,
+                "minItems": 100,
+                "startOffset": 1,
+                "type": "array"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "startOffset": 1,
+            "type": "array"
+        },
+        "PLC1.ARRAY_1..2_1..100_OF-ST_Point": {
+            "displayAsMatrix": 2,
+            "items": {
+                "allowMapping": false,
+                "items": {
+                    "$ref": "#/definitions/PLC1.ST_Point"
+                },
+                "maxItems": 100,
+                "minItems": 100,
+                "startOffset": 1,
+                "type": "array"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "startOffset": 1,
+            "type": "array"
+        },
+        "PLC1.ST_Point": {
+            "properties": {
+                "x": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/INT"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                },
+                "y": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/REAL"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "PLC1.ST_PressureData": {
+            "properties": {
+                "x": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/INT"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                },
+                "y": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/INT"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        }
+    },
     "DEFLATECOMPRESSIONLEVEL": 5,
     "DIAGNOSTICS_DOMAINS": [],
     "DISABLED_CONFIGURATION_HINTS": [],
@@ -54,6 +190,13 @@
             "PROCESSID": -1,
             "REQUIRED": true,
             "STARTUPTYPE": 0
+        },
+        "TcHmiSqliteHistorize": {
+            "ENABLED": true,
+            "NAME": "TcHmiSqliteHistorize",
+            "PATH": "..\\..\\Packages\\Beckhoff.TwinCAT.HMI.SqliteHistorize.19.0.120\\runtimes\\win-x64\\native\\",
+            "REQUIRED": false,
+            "STARTUPTYPE": 1
         },
         "TcHmiSqliteLogger": {
             "ENABLED": true,
@@ -2542,16 +2685,6 @@
             },
             "USEMAPPING": false
         },
-        "PLC1.MAIN.STOP_PRESSURE": {
-            "ACCESS": 3,
-            "DOMAIN": "ADS",
-            "DYNAMIC": true,
-            "MAPPING": "PLC1::MAIN::STOP_PRESSURE",
-            "SCHEMA": {
-                "$ref": "tchmi:general#/definitions/USINT"
-            },
-            "USEMAPPING": true
-        },
         "PLC1.MAIN.TARGET_PRESSURE": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2562,13 +2695,30 @@
             },
             "USEMAPPING": true
         },
-        "PLC1.MAIN.TurnPumpOn": {
+        "PLC1.MAIN.aGraphPoints": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
             "DYNAMIC": true,
-            "MAPPING": "PLC1::MAIN::TurnPumpOn",
+            "MAPPING": "PLC1::MAIN::aGraphPoints",
             "SCHEMA": {
-                "$ref": "tchmi:general#/definitions/BOOL"
+                "allOf": [
+                    {
+                        "comment": "Variables for Graph"
+                    },
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.ARRAY_1..1_1..1000_OF-ST_Point"
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.aPoints": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::aPoints",
+            "SCHEMA": {
+                "$ref": "tchmi:server#/definitions/PLC1.ARRAY_1..2_1..100_OF-INT"
             },
             "USEMAPPING": true
         },
@@ -2949,6 +3099,271 @@
             "MAPPING": "Config",
             "OPTIONS": {},
             "SCHEMA": {},
+            "USEMAPPING": true
+        },
+        "TcHmiSqliteHistorize.Config": {
+            "ACCESS": 0,
+            "DOMAIN": "TcHmiSqliteHistorize",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "Config",
+            "OPTIONS": {},
+            "SCHEMA": {},
+            "USEMAPPING": true
+        },
+        "TcHmiSqliteHistorize.DeleteDatabaseEntries": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiSqliteHistorize",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "DeleteDatabaseEntries",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true,
+                "writeValue": {
+                    "properties": {
+                        "disableRecording": {
+                            "type": "boolean"
+                        },
+                        "symbolName": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiSqliteHistorize.Diagnostics": {
+            "ACCESS": 1,
+            "DOMAIN": "TcHmiSqliteHistorize",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "Diagnostics",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "additionalProperties": false,
+                "function": true,
+                "properties": {
+                    "databaseSize": {
+                        "allOf": [
+                            {
+                                "$ref": "tchmi:general#/definitions/Number"
+                            },
+                            {
+                                "displayClass": "byte",
+                                "propertyOrder": 1,
+                                "readOnly": true
+                            }
+                        ]
+                    },
+                    "estimatedDatabaseSize": {
+                        "allOf": [
+                            {
+                                "$ref": "tchmi:general#/definitions/Number"
+                            },
+                            {
+                                "displayClass": "byte",
+                                "propertyOrder": 5,
+                                "readOnly": true
+                            }
+                        ]
+                    },
+                    "estimatedDatabaseSizePerSymbol": {
+                        "additionalProperties": {
+                            "allOf": [
+                                {
+                                    "$ref": "tchmi:general#/definitions/Number"
+                                },
+                                {
+                                    "displayClass": "byte",
+                                    "readOnly": true
+                                }
+                            ]
+                        },
+                        "readOnly": true,
+                        "type": "object"
+                    },
+                    "numEntries": {
+                        "configDescription": "descNumEntries",
+                        "propertyOrder": 2,
+                        "readOnly": true,
+                        "type": "integer"
+                    },
+                    "numEntriesLifetime": {
+                        "configDescription": "descNumEntries",
+                        "propertyOrder": 3,
+                        "readOnly": true,
+                        "type": "number"
+                    },
+                    "recordingTime": {
+                        "format": "timespan",
+                        "propertyOrder": 4,
+                        "readOnly": true,
+                        "type": "string"
+                    }
+                },
+                "readOnly": true,
+                "type": "object"
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiSqliteHistorize.GetTrendLineData": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiSqliteHistorize",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "GetTrendLineData",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true,
+                "properties": {
+                    "axesData": {
+                        "description": "descAxisData",
+                        "items": {
+                            "items": {
+                                "properties": {
+                                    "error": {
+                                        "type": "number"
+                                    },
+                                    "flags": {
+                                        "description": "descAxisDataFlags",
+                                        "type": "string"
+                                    },
+                                    "x": {
+                                        "description": "descAxisDataX",
+                                        "format": "date-time",
+                                        "type": "string"
+                                    },
+                                    "y": {
+                                        "description": "descAxisDataY",
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object",
+                "writeValue": {
+                    "properties": {
+                        "chartName": {
+                            "description": "descChartName",
+                            "type": "string"
+                        },
+                        "displayWidth": {
+                            "minimum": 2.0,
+                            "type": "number"
+                        },
+                        "xAxisEnd": {
+                            "$ref": "tchmi:server#/definitions/stringTypeArray"
+                        },
+                        "xAxisStart": {
+                            "$ref": "tchmi:server#/definitions/stringTypeArray"
+                        },
+                        "yAxes": {
+                            "items": {
+                                "additionalProperties": false,
+                                "properties": {
+                                    "symbol": {
+                                        "description": "descSymbolName",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "symbol"
+                                ],
+                                "type": "object"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "required": [
+                        "chartName",
+                        "yAxes",
+                        "xAxisStart",
+                        "displayWidth"
+                    ],
+                    "type": "object"
+                }
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiSqliteHistorize.GetTrendLineWindow": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiSqliteHistorize",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "GetTrendLineWindow",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true,
+                "properties": {
+                    "xAxisEnd": {
+                        "description": "descTrendLineAxisEndX",
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "xAxisStart": {
+                        "description": "descTrendLineAxisStartX",
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "writeValue": {
+                    "properties": {
+                        "chartName": {
+                            "description": "descChartName",
+                            "type": "string"
+                        },
+                        "xAxisEnd": {
+                            "$ref": "tchmi:server#/definitions/stringTypeArray"
+                        },
+                        "xAxisStart": {
+                            "$ref": "tchmi:server#/definitions/stringTypeArray"
+                        },
+                        "yAxes": {
+                            "description": "descTrendLineAxisY",
+                            "items": {
+                                "additionalProperties": false,
+                                "properties": {
+                                    "symbol": {
+                                        "description": "descSymbolName",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "symbol"
+                                ],
+                                "type": "object"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "required": [
+                        "chartName",
+                        "yAxes",
+                        "xAxisStart"
+                    ],
+                    "type": "object"
+                }
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiSqliteHistorize.HistorizeData": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiSqliteHistorize",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "HistorizeData",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true
+            },
             "USEMAPPING": true
         },
         "TcHmiSqliteLogger.Clear": {
@@ -3550,6 +3965,8 @@
                 "PLC1.MAIN.STOP_PRESSURE": 3,
                 "PLC1.MAIN.TARGET_PRESSURE": 3,
                 "PLC1.MAIN.TurnPumpOn": 3,
+                "PLC1.MAIN.aGraphPoints": 3,
+                "PLC1.MAIN.aPoints": 3,
                 "PLC1.MAIN.bEmergencyStopPump": 3,
                 "PLC1.MAIN.bPumpState": 3,
                 "PLC1.MAIN.bStartStop": 3,
@@ -3558,6 +3975,11 @@
                 "PLC1.MAIN.sState": 3,
                 "SetLocale": 3,
                 "SubscribeEvents": 3,
+                "TcHmiSqliteHistorize.DeleteDatabaseEntries": 3,
+                "TcHmiSqliteHistorize.Diagnostics": 1,
+                "TcHmiSqliteHistorize.GetTrendLineData": 3,
+                "TcHmiSqliteHistorize.GetTrendLineWindow": 3,
+                "TcHmiSqliteHistorize.HistorizeData": 3,
                 "TcHmiSqliteLogger.Diagnostics": 1,
                 "TcHmiUserManagement.ChangePassword": 3,
                 "Unsubscribe": 3,

@@ -70,6 +70,14 @@
         "TextFontWeight": "Auto"
       },
       "themedResources": {}
+    },
+    "BlueBg": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(68, 135, 226, 1)"
+        }
+      },
+      "themedResources": {}
     }
   },
   "$schema": "./../../../Packages/Beckhoff.TwinCAT.HMI.Framework.12.760.59/runtimes/native1.12-tchmi/Schema/ThemeDescription.Schema.json"

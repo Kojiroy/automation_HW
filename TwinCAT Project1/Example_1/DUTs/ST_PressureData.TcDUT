@@ -3,8 +3,8 @@
   <DUT Name="ST_PressureData" Id="{f1c3cffc-7ed5-4968-bc48-2b3c39dc7bcc}">
     <Declaration><![CDATA[TYPE ST_PressureData :
 STRUCT
-	nPressure : UDINT;
-	dtTimestamp : DATE_AND_TIME;
+	x : INT;
+	y : INT;
 END_STRUCT
 END_TYPE]]></Declaration>
   </DUT>

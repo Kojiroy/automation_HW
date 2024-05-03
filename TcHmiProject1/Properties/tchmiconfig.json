@@ -50,12 +50,17 @@
       "name": "Fonts/Fonts.css",
       "description": "",
       "type": "Stylesheet"
+    },
+    {
+      "name": "ReadablePressureData.js",
+      "description": "",
+      "type": "JavaScript"
     }
   ],
   "userControls": [],
   "content": [
     {
-      "url": "Contents/Content_0.content",
+      "url": "Contents/ContentConfig.content",
       "preload": false,
       "keepAlive": false,
       "loadSync": false,
@@ -69,7 +74,7 @@
       "preloadBindings": false
     },
     {
-      "url": "Contents/ContentConfig.content",
+      "url": "Contents/Content_0.content",
       "preload": false,
       "keepAlive": false,
       "loadSync": false,
@@ -84,7 +89,11 @@
       "preloadBindings": false
     }
   ],
-  "userFunctions": [],
+  "userFunctions": [
+    {
+      "url": "ReadablePressureData.js"
+    }
+  ],
   "symbols": {
     "internal": {},
     "themedResources": {}
