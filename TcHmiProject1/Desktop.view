@@ -1,140 +1,14 @@
-<div id="Desktop" data-tchmi-type="TcHmi.Controls.System.TcHmiView" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width-mode="Content" data-tchmi-min-width="100" data-tchmi-min-width-unit="%" data-tchmi-height-mode="Content" data-tchmi-min-height="100" data-tchmi-min-height-unit="%">
-<div id="TcHmiTextblock" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="51" data-tchmi-height-unit="px" data-tchmi-left="65" data-tchmi-left-unit="px" data-tchmi-text="Pressure Data [V]" data-tchmi-top="372" data-tchmi-top-unit="px" data-tchmi-width="200" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="20">
-</div>
-<div id="TcHmiToggleSwitch" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleSwitch" data-tchmi-height="49" data-tchmi-height-unit="px" data-tchmi-left="83" data-tchmi-left-unit="px" data-tchmi-text=" " data-tchmi-top="221" data-tchmi-top-unit="px" data-tchmi-width="100" data-tchmi-width-unit="px" data-tchmi-state-symbol="%s%PLC1.MAIN.bTurnPumpControllerOn%/s%">
+<div id="Desktop" data-tchmi-type="TcHmi.Controls.System.TcHmiView" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width-mode="Content" data-tchmi-min-width="100" data-tchmi-min-width-unit="%" data-tchmi-height-mode="Content" data-tchmi-min-height="100" data-tchmi-min-height-unit="%"  data-tchmi-width="800" data-tchmi-height="650">
+<div id="TcHmiButton_ESTOP" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="540" data-tchmi-left-unit="px" data-tchmi-text="E_STOP" data-tchmi-top="21" data-tchmi-top-unit="px" data-tchmi-width="110" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="30" data-tchmi-state-symbol="%f%%s%PLC1.MAIN.bEmergencyStopPump%/s%%/f%" data-tchmi-opacity="1" data-tchmi-text-font-style="Normal" data-tchmi-text-font-weight="Normal">
 
 
-
-
-
-
-
-
-
-
-
-<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
-[
-  {
-    "event": "TcHmiToggleSwitch.onMouseClick",
-    "actions": [
-      {
-        "objectType": "Condition",
-        "active": true,
-        "parts": [
-          {
-            "if": [
-              {
-                "compare1": {
-                  "objectType": "Symbol",
-                  "valueType": "tchmi:general#/definitions/BOOL",
-                  "symbolExpression": "%s%PLC1.MAIN.bEmergencyStopPump%/s%"
-                },
-                "compare2": {
-                  "objectType": "StaticValue",
-                  "valueType": "tchmi:general#/definitions/String",
-                  "value": false
-                },
-                "compareOperator": "==",
-                "logic": null
-              }
-            ],
-            "then": [
-              {
-                "objectType": "WriteToSymbol",
-                "active": true,
-                "symbolExpression": "%s%PLC1.MAIN.bTurnPumpControllerOn%/s%",
-                "value": {
-                  "objectType": "Symbol",
-                  "valueType": "tchmi:general#/definitions/String",
-                  "symbolExpression": "%f%not %s%PLC1.MAIN.bTurnPumpControllerOn%/s%%/f%"
-                },
-                "asyncWait": true
-              }
-            ]
-          },
-          {
-            "else": []
-          }
-        ],
-        "asyncWait": true
-      }
-    ]
-  }
-]
-</script>
-</div>
-<div id="TcHmiLinearGauge" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLinearGauge" data-tchmi-base-animation-time="1000" data-tchmi-height="96" data-tchmi-height-unit="px" data-tchmi-label-range="5" data-tchmi-left="303" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="true" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="true" data-tchmi-top="352" data-tchmi-top-unit="px" data-tchmi-width="360" data-tchmi-width-unit="px" data-tchmi-min-value="0" data-tchmi-max-value="20" data-tchmi-unit="Volts" data-tchmi-set-point="%s%PLC1.MAIN.TARGET_PRESSURE%/s%" data-tchmi-value="%s%PLC1.GVL_Var.nPressure%/s%">
-<script data-tchmi-target-attribute="data-tchmi-range" type="application/json">
-[
-  {
-    "color": {
-      "color": "rgba(0, 128, 0, 1)"
-    },
-    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-1%/f%",
-    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+1%/f%"
-  },
-  {
-    "color": {
-      "color": "rgba(255, 165, 0, 1)"
-    },
-    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-6%/f%",
-    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-1%/f%"
-  },
-  {
-    "color": {
-      "color": "rgba(255, 165, 0, 1)"
-    },
-    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+1%/f%",
-    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+6%/f%"
-  },
-  {
-    "color": {
-      "color": "rgba(255, 0, 0, 1)"
-    },
-    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+6%/f%",
-    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+16%/f%"
-  },
-  {
-    "color": {
-      "color": "rgba(255, 0, 0, 1)"
-    },
-    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-16%/f%",
-    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-6%/f%"
-  }
-]
-</script>
-<script data-tchmi-target-attribute="data-tchmi-value-format" type="application/json">
-{
-  "objectType": "Function",
-  "fn": "GaugeValueFormatter",
-  "fnParams": []
-}
-</script>
-<script data-tchmi-target-attribute="data-tchmi-tick-definition" type="application/json">
-{
-  "mainTickRange": 20,
-  "subTickRange": 5
-}
-</script>
-
-
-
-</div>
-<div id="TcHmiButton" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="59" data-tchmi-height-unit="px" data-tchmi-left="657" data-tchmi-left-unit="px" data-tchmi-text="Emergency Stop" data-tchmi-top="513" data-tchmi-top-unit="px" data-tchmi-width="100" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="20">
-
-<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
-{
-  "color": "rgba(210, 44, 44, 1)"
-}
-</script>
 
 <script data-tchmi-target-attribute="data-tchmi-border-radius" type="application/json">
 {
-  "topLeft": 20.0,
-  "topRight": 20.0,
-  "bottomLeft": 20.0,
-  "bottomRight": 20.0,
+  "topLeft": 10.0,
+  "topRight": 10.0,
+  "bottomLeft": 10.0,
+  "bottomRight": 10.0,
   "topLeftUnit": "px",
   "topRightUnit": "px",
   "bottomLeftUnit": "px",
@@ -151,16 +25,218 @@
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
   {
-    "event": "TcHmiButton.onPressed",
+    "event": "TcHmiButton_ESTOP.onPressed",
     "actions": [
       {
-        "objectType": "WriteToSymbol",
+        "objectType": "JavaScript",
         "active": true,
+        "sourceLines": [
+          "TcHmi.Symbol.writeEx('%s%PLC1.MAIN.bTurnPumpControllerOn%/s%', false, function(data) {",
+          "\tif (data.error !== TcHmi.Errors.NONE) {",
+          "        console.error('Error writing to symbol:', data.error);",
+          "    } else {",
+          "        console.log(`Turned pump off`);",
+          "    }",
+          "});",
+          "TcHmi.Symbol.writeEx('%s%PLC1.MAIN.bEmergencyStopPump%/s%', true, function(data) {",
+          "\tif (data.error !== TcHmi.Errors.NONE) {",
+          "        console.error('Error writing to symbol:', data.error);",
+          "    } else {",
+          "        console.log(`Turned e_stop on`);",
+          "    }",
+          "});"
+        ],
+        "injectContextObject": false,
+        "asyncWait": true,
+        "waitMode": "Synchronous"
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": false,
+        "symbolExpression": "%s%PLC1.MAIN.bTurnPumpControllerOn%/s%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:general#/definitions/BOOL",
+          "value": false
+        },
+        "asyncWait": true
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": false,
         "symbolExpression": "%s%PLC1.MAIN.bEmergencyStopPump%/s%",
         "value": {
           "objectType": "StaticValue",
           "valueType": "tchmi:general#/definitions/BOOL",
           "value": true
+        },
+        "asyncWait": true
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiTextblockStatus::ClassNames%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ClassNameList",
+          "value": [
+            "RedBg"
+          ]
+        },
+        "asyncWait": true
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiToggleSwitchPump::ClassNames%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ClassNameList",
+          "value": [
+            "DarkGreyBg"
+          ]
+        },
+        "asyncWait": true
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiButtonReset::ClassNames%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ClassNameList",
+          "value": [
+            "GreyBg"
+          ]
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
+[
+  "RedBg"
+]
+</script>
+
+
+</div>
+<div id="TcHmiTextblock_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="24" data-tchmi-height-unit="px" data-tchmi-left="54" data-tchmi-left-unit="px" data-tchmi-text="Status" data-tchmi-top="21" data-tchmi-top-unit="px" data-tchmi-width="65" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="25" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center">
+</div>
+<div id="TcHmiTextblockStatus" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="45" data-tchmi-height-unit="px" data-tchmi-left="19" data-tchmi-left-unit="px" data-tchmi-text="%s%PLC1.MAIN.sState%/s%" data-tchmi-top="55" data-tchmi-top-unit="px" data-tchmi-width="130" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="25">
+
+<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
+[
+  "GreenBg"
+]
+</script>
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-border-radius" type="application/json">
+{
+  "topLeft": 20.0,
+  "topRight": 20.0,
+  "bottomLeft": 20.0,
+  "bottomRight": 20.0,
+  "topLeftUnit": "px",
+  "topRightUnit": "px",
+  "bottomLeftUnit": "px",
+  "bottomRightUnit": "px"
+}
+</script>
+</div>
+<div id="TcHmiRegionMain" data-tchmi-type="TcHmi.Controls.System.TcHmiRegion" data-tchmi-height="500" data-tchmi-height-unit="px" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="150" data-tchmi-top-unit="px" data-tchmi-width="800" data-tchmi-width-unit="px" data-tchmi-target-content="Contents/Content_0.content" data-tchmi-scale-mode="ScaleToFit">
+
+
+</div>
+<div id="TcHmiButtonReset" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="663" data-tchmi-left-unit="px" data-tchmi-text="RESET" data-tchmi-top="21" data-tchmi-top-unit="px" data-tchmi-width="100" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="30">
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-border-radius" type="application/json">
+{
+  "topLeft": 10.0,
+  "topRight": 10.0,
+  "bottomLeft": 10.0,
+  "bottomRight": 10.0,
+  "topLeftUnit": "px",
+  "topRightUnit": "px",
+  "bottomLeftUnit": "px",
+  "bottomRightUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
+[
+  "DarkGreyBg"
+]
+</script>
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiButtonReset.onPressed",
+    "actions": [
+      {
+        "objectType": "JavaScript",
+        "active": true,
+        "sourceLines": [
+          "TcHmi.Symbol.writeEx('%s%PLC1.MAIN.bEmergencyStopPump%/s%', false, function(data) {",
+          "\tif (data.error !== TcHmi.Errors.NONE) {",
+          "        console.error('Error writing to symbol:', data.error);",
+          "    } else {",
+          "        console.log(`Turned e_stop off`);",
+          "    }",
+          "});"
+        ],
+        "injectContextObject": false,
+        "asyncWait": true,
+        "waitMode": "Synchronous"
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiTextblockStatus::ClassNames%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ClassNameList",
+          "value": [
+            "GreenBg"
+          ]
+        },
+        "asyncWait": true
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiToggleSwitchPump::ClassNames%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ClassNameList",
+          "value": [
+            "GreyBg"
+          ]
+        },
+        "asyncWait": true
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiButtonReset::ClassNames%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ClassNameList",
+          "value": [
+            "DarkGreyBg"
+          ]
         },
         "asyncWait": true
       }
@@ -169,25 +245,27 @@
 ]
 </script>
 </div>
-<div id="TcHmiTextblock_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="49" data-tchmi-height-unit="px" data-tchmi-left="60" data-tchmi-left-unit="px" data-tchmi-text="Start/Stop Pump Controller" data-tchmi-top="162" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="20">
-</div>
-<div id="TcHmiTextbox" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="46" data-tchmi-height-unit="px" data-tchmi-left="581" data-tchmi-left-unit="px" data-tchmi-text="%s%PLC1.MAIN.sState%/s%" data-tchmi-top="80" data-tchmi-top-unit="px" data-tchmi-width="138" data-tchmi-width-unit="px" data-tchmi-text-font-size="25" data-tchmi-text-horizontal-alignment="Center">
-<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+<div id="TcHmiButton_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="30" data-tchmi-height-unit="px" data-tchmi-left="499" data-tchmi-left-unit="px" data-tchmi-text="General" data-tchmi-top="120" data-tchmi-top-unit="px" data-tchmi-width="100" data-tchmi-width-unit="px" data-tchmi-word-wrap="true">
+
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
 {
-  "top": 3,
-  "right": 3,
-  "bottom": 3,
-  "left": 3
+  "left": 1,
+  "right": 1,
+  "top": 1,
+  "bottom": 1,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
 }
 </script>
 
-
 <script data-tchmi-target-attribute="data-tchmi-border-radius" type="application/json">
 {
-  "topLeft": 15.0,
-  "topRight": 15.0,
-  "bottomLeft": 15.0,
-  "bottomRight": 15.0,
+  "topLeft": 10.0,
+  "topRight": 10.0,
+  "bottomLeft": 0.0,
+  "bottomRight": 0.0,
   "topLeftUnit": "px",
   "topRightUnit": "px",
   "bottomLeftUnit": "px",
@@ -197,16 +275,108 @@
 
 
 
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiButton_1.onPressed",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiRegionMain::TargetContent%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ContentPath",
+          "value": "Contents/Content_0.content"
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiButton_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="30" data-tchmi-height-unit="px" data-tchmi-left="599" data-tchmi-left-unit="px" data-tchmi-text="Analysis" data-tchmi-top="120" data-tchmi-top-unit="px" data-tchmi-width="100" data-tchmi-width-unit="px" data-tchmi-word-wrap="true">
 
-
-
+<script data-tchmi-target-attribute="data-tchmi-border-radius" type="application/json">
+{
+  "topLeft": 10.0,
+  "topRight": 10.0,
+  "bottomLeft": 0.0,
+  "bottomRight": 0.0,
+  "topLeftUnit": "px",
+  "topRightUnit": "px",
+  "bottomLeftUnit": "px",
+  "bottomRightUnit": "px"
+}
+</script>
 
 <script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
 {
-  "color": "rgba(150, 255, 46, 1)"
+  "color": "None"
 }
 </script>
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiButton_2.onPressed",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiRegionMain::TargetContent%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ContentPath",
+          "value": "Contents/Content1.content"
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
 </div>
-<div id="TcHmiTextblock_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="42" data-tchmi-height-unit="px" data-tchmi-left="375" data-tchmi-left-unit="px" data-tchmi-text="Status" data-tchmi-top="73" data-tchmi-top-unit="px" data-tchmi-width="112" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="30" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center">
+<div id="TcHmiButton_3" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="30" data-tchmi-height-unit="px" data-tchmi-left="699" data-tchmi-left-unit="px" data-tchmi-text="Config" data-tchmi-top="120" data-tchmi-top-unit="px" data-tchmi-width="100" data-tchmi-width-unit="px" data-tchmi-word-wrap="true">
+<script data-tchmi-target-attribute="data-tchmi-border-radius" type="application/json">
+{
+  "topLeft": 10.0,
+  "topRight": 10.0,
+  "bottomLeft": 0.0,
+  "bottomRight": 0.0,
+  "topLeftUnit": "px",
+  "topRightUnit": "px",
+  "bottomLeftUnit": "px",
+  "bottomRightUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "None"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiButton_3.onPressed",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%ctrl%TcHmiRegionMain::TargetContent%/ctrl%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:framework#/definitions/ContentPath",
+          "value": "Contents/ContentConfig.content"
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
 </div>
 </div>

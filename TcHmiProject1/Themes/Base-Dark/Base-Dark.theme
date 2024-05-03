@@ -1,3 +1,30 @@
 {
+  "controlTypeValues": {
+    "TcHmi.Controls.Beckhoff.TcHmiToggleButton": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(190, 190, 190, 1)"
+        },
+        "TextColor": {
+          "color": "rgba(106, 106, 106, 1)"
+        }
+      },
+      "themedResources": {}
+    },
+    "TcHmi.Controls.Beckhoff.TcHmiToggleSwitch": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(129, 129, 129, 1)"
+        }
+      },
+      "themedResources": {}
+    }
+  },
+  "controlClassValues": {
+    "CustomButton": {
+      "attributes": {},
+      "themedResources": {}
+    }
+  },
   "$schema": "./../../../Packages/Beckhoff.TwinCAT.HMI.Framework.12.760.59/runtimes/native1.12-tchmi/Schema/ThemeDescription.Schema.json"
 }

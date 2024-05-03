@@ -1,3 +1,76 @@
 {
+  "controlTypeValues": {
+    "TcHmi.Controls.Beckhoff.TcHmiToggleButton": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(254, 254, 254, 1)"
+        },
+        "TextColor": {
+          "color": "rgba(0, 0, 0, 1)"
+        }
+      },
+      "themedResources": {}
+    }
+  },
+  "controlClassValues": {
+    "ActiveTab": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(235, 131, 156, 1)"
+        },
+        "TextFontWeight": "Auto"
+      },
+      "themedResources": {}
+    },
+    "CustomButton": {
+      "attributes": {},
+      "themedResources": {}
+    },
+    "DarkGreyBg": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(161, 161, 161, 1)"
+        },
+        "Opacity": 0.8
+      },
+      "themedResources": {}
+    },
+    "GreenBg": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(36, 208, 105, 1)"
+        },
+        "Opacity": "1"
+      },
+      "themedResources": {}
+    },
+    "GreyBg": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(215, 212, 212, 1)"
+        },
+        "Opacity": "1"
+      },
+      "themedResources": {}
+    },
+    "RedBg": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(216, 56, 56, 1)"
+        },
+        "Opacity": "1"
+      },
+      "themedResources": {}
+    },
+    "Tab": {
+      "attributes": {
+        "BackgroundColor": {
+          "color": "rgba(133, 186, 238, 1)"
+        },
+        "TextFontWeight": "Auto"
+      },
+      "themedResources": {}
+    }
+  },
   "$schema": "./../../../Packages/Beckhoff.TwinCAT.HMI.Framework.12.760.59/runtimes/native1.12-tchmi/Schema/ThemeDescription.Schema.json"
 }
