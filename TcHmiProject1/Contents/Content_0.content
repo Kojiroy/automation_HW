@@ -1,0 +1,204 @@
+<div id="Content_0" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="800" data-tchmi-height="500">
+
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(206, 126, 126, 1)"
+}
+</script>
+<div id="TcHmiTextblock_3" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="51" data-tchmi-height-unit="px" data-tchmi-left="67" data-tchmi-left-unit="px" data-tchmi-text="Pressure Data [V]" data-tchmi-top="294" data-tchmi-top-unit="px" data-tchmi-width="200" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="20">
+</div>
+<div id="TcHmiToggleSwitchPump" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleSwitch" data-tchmi-height="49" data-tchmi-height-unit="px" data-tchmi-left="85" data-tchmi-left-unit="px" data-tchmi-text=" " data-tchmi-top="144" data-tchmi-top-unit="px" data-tchmi-width="100" data-tchmi-width-unit="px" data-tchmi-state-symbol="%f%%s%PLC1.MAIN.bTurnPumpControllerOn%/s%%/f%">
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiToggleSwitchPump.onMouseClick",
+    "actions": [
+      {
+        "objectType": "JavaScript",
+        "active": true,
+        "sourceLines": [
+          "TcHmi.Symbol.readEx2('%s%PLC1.MAIN.bEmergencyStopPump%/s%', function(eStopData) {",
+          "    if (eStopData.error === TcHmi.Errors.NONE) {",
+          "        // Successfully read the value, now toggle it",
+          "        var run = !eStopData.value;",
+          "        if (run) {",
+          "\t\t\tTcHmi.Symbol.readEx2('%s%PLC1.MAIN.bTurnPumpControllerOn%/s%', function(readData) {",
+          "\t\t\t    if (readData.error === TcHmi.Errors.NONE) {",
+          "\t\t\t        // Successfully read the value, now toggle it",
+          "\t\t\t        var currentValue = readData.value;",
+          "\t\t\t        var newValue = !currentValue;",
+          "\t\t\t        TcHmi.Symbol.writeEx('%s%PLC1.MAIN.bTurnPumpControllerOn%/s%', newValue, function(data) {",
+          "\t\t\t\t\t\tif (data.error !== TcHmi.Errors.NONE) {",
+          "\t\t\t\t            console.error('Error writing to symbol:', data.error);",
+          "\t\t\t\t        } else {",
+          "\t\t\t\t            console.log(`Turned pump ${newValue ? \"on\" : \"off\"}`);",
+          "\t\t\t            }",
+          "\t\t\t     \t});",
+          "\t\t\t    } else {",
+          "\t\t\t        // Handle read error",
+          "\t\t\t        console.error('Error reading symbol:', readData.error);",
+          "\t\t\t    }",
+          "\t\t\t});",
+          "    \t}",
+          "        else {",
+          "        \tconsole.log(\"E_stop is enabled!\\nCan\\'t turn on pump controller.\");",
+          "    \t}",
+          "        \t",
+          "    } else {",
+          "        console.error('Error reading symbol:', eStopData.error);",
+          "    }",
+          "});"
+        ],
+        "injectContextObject": false,
+        "asyncWait": true,
+        "waitMode": "Synchronous"
+      },
+      {
+        "objectType": "Condition",
+        "active": false,
+        "parts": [
+          {
+            "if": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/BOOL",
+                  "symbolExpression": "%s%PLC1.MAIN.bEmergencyStopPump%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/BOOL",
+                  "value": false
+                },
+                "compareOperator": "==",
+                "logic": null
+              }
+            ],
+            "then": [
+              {
+                "objectType": "Condition",
+                "active": true,
+                "parts": [
+                  {
+                    "if": [
+                      {
+                        "compare1": {
+                          "objectType": "Symbol",
+                          "valueType": "tchmi:general#/definitions/BOOL",
+                          "symbolExpression": "%s%PLC1.MAIN.bTurnPumpControllerOn%/s%"
+                        },
+                        "compare2": {
+                          "objectType": "StaticValue",
+                          "valueType": "tchmi:general#/definitions/BOOL",
+                          "value": false
+                        },
+                        "compareOperator": "==",
+                        "logic": null
+                      }
+                    ],
+                    "then": [
+                      {
+                        "objectType": "WriteToSymbol",
+                        "active": true,
+                        "symbolExpression": "%s%PLC1.MAIN.bTurnPumpControllerOn%/s%",
+                        "value": {
+                          "objectType": "StaticValue",
+                          "valueType": "tchmi:general#/definitions/BOOL",
+                          "value": true
+                        },
+                        "asyncWait": true
+                      }
+                    ]
+                  },
+                  {
+                    "else": [
+                      {
+                        "objectType": "WriteToSymbol",
+                        "active": true,
+                        "symbolExpression": "%s%PLC1.MAIN.bTurnPumpControllerOn%/s%",
+                        "value": {
+                          "objectType": "StaticValue",
+                          "valueType": "tchmi:general#/definitions/BOOL",
+                          "value": false
+                        },
+                        "asyncWait": true
+                      }
+                    ]
+                  }
+                ],
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "else": []
+          }
+        ],
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TcHmiLinearGauge" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLinearGauge" data-tchmi-base-animation-time="1000" data-tchmi-height="96" data-tchmi-height-unit="px" data-tchmi-label-range="5" data-tchmi-left="305" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="true" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="true" data-tchmi-top="276" data-tchmi-top-unit="px" data-tchmi-width="360" data-tchmi-width-unit="px" data-tchmi-min-value="0" data-tchmi-max-value="20" data-tchmi-unit="Volts" data-tchmi-set-point="%s%PLC1.MAIN.TARGET_PRESSURE%/s%" data-tchmi-value="%s%PLC1.GVL_Var.nPressure%/s%">
+<script data-tchmi-target-attribute="data-tchmi-range" type="application/json">
+[
+  {
+    "color": {
+      "color": "rgba(0, 128, 0, 1)"
+    },
+    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-1%/f%",
+    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+1%/f%"
+  },
+  {
+    "color": {
+      "color": "rgba(255, 165, 0, 1)"
+    },
+    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-6%/f%",
+    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-1%/f%"
+  },
+  {
+    "color": {
+      "color": "rgba(255, 165, 0, 1)"
+    },
+    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+1%/f%",
+    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+6%/f%"
+  },
+  {
+    "color": {
+      "color": "rgba(255, 0, 0, 1)"
+    },
+    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+6%/f%",
+    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%+16%/f%"
+  },
+  {
+    "color": {
+      "color": "rgba(255, 0, 0, 1)"
+    },
+    "start": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-16%/f%",
+    "end": "%f%%s%PLC1.MAIN.TARGET_PRESSURE%/s%-6%/f%"
+  }
+]
+</script>
+<script data-tchmi-target-attribute="data-tchmi-value-format" type="application/json">
+{
+  "objectType": "Function",
+  "fn": "GaugeValueFormatter",
+  "fnParams": []
+}
+</script>
+<script data-tchmi-target-attribute="data-tchmi-tick-definition" type="application/json">
+{
+  "mainTickRange": 20,
+  "subTickRange": 5
+}
+</script>
+
+
+
+</div>
+<div id="TcHmiTextblock_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="49" data-tchmi-height-unit="px" data-tchmi-left="62" data-tchmi-left-unit="px" data-tchmi-text="Start/Stop Pump Controller" data-tchmi-top="85" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="20">
+</div>
+</div>
