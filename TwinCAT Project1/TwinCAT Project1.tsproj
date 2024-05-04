@@ -1,25 +1,5 @@
 <?xml version="1.0"?>
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.56">
-	<DataTypes>
-		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-000000000041}" TcBaseType="true" HideSubItems="true" CName="AmsNetId">AMSNETID</Name>
-			<BitSize>48</BitSize>
-			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
-			<ArrayInfo>
-				<LBound>0</LBound>
-				<Elements>6</Elements>
-			</ArrayInfo>
-			<Format>
-				<Printf>%d.%d.%d.%d.%d.%d</Printf>
-				<Parameter>[0]</Parameter>
-				<Parameter>[1]</Parameter>
-				<Parameter>[2]</Parameter>
-				<Parameter>[3]</Parameter>
-				<Parameter>[4]</Parameter>
-				<Parameter>[5]</Parameter>
-			</Format>
-		</DataType>
-	</DataTypes>
 	<Project ProjectGUID="{F6CF7AA3-33EA-44A6-B95D-2F32AEA1F4D5}" Target64Bit="true" ShowHideConfigurations="#x6">
 		<System>
 			<Tasks>
@@ -30,9 +10,16 @@
 		</System>
 		<Plc>
 			<Project GUID="{7747649A-3709-49A1-B334-A5571064480E}" Name="Example_1" PrjFilePath="Example_1\Example_1.plcproj" TmcFilePath="Example_1\Example_1.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Example_1\Example_1.tmc" TmcHash="{AC2D6BAF-978B-8458-6223-4C70F508DD77}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Example_1\Example_1.tmc" TmcHash="{4C3848B2-BEE9-DE32-B3C3-E60823F727B9}">
 					<Name>Example_1 Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="2" AreaNo="1">
+						<Name>PlcTask Outputs</Name>
+						<Var>
+							<Name>MAIN.KukaBot.wOutputWord</Name>
+							<Type>DWORD</Type>
+						</Var>
+					</Vars>
 					<UnrestoredVarLinks ImportTime="2024-04-23T09:43:54">
 						<OwnerA Name="OutputSrc" Prefix="TIPC^Example_1^Example_1 Instance" Type="2">
 							<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1100)^Term 3 (EL2634)">
@@ -58,63 +45,14 @@
 			</Project>
 		</Plc>
 		<Io>
-			<Device Id="2" DevType="144" AmsPort="28674" AmsNetId="172.24.64.1.3.1" RemoteName="Device (EtherCAT Simulation)">
-				<Name>Device (EtherCAT Simulation)</Name>
-				<DevData>0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000</DevData>
-				<Vars VarGrpType="1">
-					<Name>Inputs</Name>
-					<Var>
-						<Name>Status</Name>
-						<Type>UDINT</Type>
-					</Var>
-					<Var>
-						<Name>Telegram Counter</Name>
-						<Type>UDINT</Type>
-						<BitOffs>32</BitOffs>
-					</Var>
-					<Var>
-						<Name>Dc Time</Name>
-						<Type>ULINT</Type>
-						<BitOffs>64</BitOffs>
-					</Var>
-					<Var>
-						<Name>Dc Time to System Time Offset</Name>
-						<Type>ULINT</Type>
-						<BitOffs>128</BitOffs>
-					</Var>
-					<Var>
-						<Name>DevState</Name>
-						<Comment><![CDATA[0x0001 = Link error
-0x0100 = At least one device in 'INIT' state
-0x0200 = At least one device in 'PRE-OP' state
-0x0400 = At least one device in 'SAFE-OP' state
-0x0800 = At least one device indicates an error state
-]]></Comment>
-						<Type>UINT</Type>
-						<BitOffs>256</BitOffs>
-					</Var>
-					<Var>
-						<Name>AmsNetId</Name>
-						<Comment><![CDATA[AmsNetId of Simulation device]]></Comment>
-						<Type GUID="{18071995-0000-0000-0000-000000000041}">AMSNETID</Type>
-						<BitOffs>1536</BitOffs>
-					</Var>
-				</Vars>
-				<Vars VarGrpType="2">
-					<Name>Outputs</Name>
-					<Var>
-						<Name>Control</Name>
-						<Type>UDINT</Type>
-					</Var>
-				</Vars>
-				<Image Id="3" AddrType="1" ImageType="3" SizeIn="65536" SizeOut="65536">
-					<Name>Image</Name>
-				</Image>
-				<EcatSimu>
-					<GeneralSettings SecondAdapter="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
-					<DevSettings InOffset="256" OutOffset="256" StateOffset="128" Flags="1"/>
-				</EcatSimu>
-			</Device>
+			<Device File="Device 1 (EtherCAT).xti" Id="1"/>
 		</Io>
 	</Project>
+	<Mappings>
+		<OwnerA Name="TIPC^Example_1^Example_1 Instance">
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box 4 (KRC4 secondary EL6695-1001)">
+				<Link VarA="PlcTask Outputs^MAIN.KukaBot.wOutputWord" VarB="Module 3 (Default IO)^Std. Out (4 Bytes)^Output DWORD 0"/>
+			</OwnerB>
+		</OwnerA>
+	</Mappings>
 </TcSmProject>

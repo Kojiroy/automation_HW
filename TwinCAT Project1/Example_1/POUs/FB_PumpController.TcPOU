@@ -73,6 +73,8 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbPID.bReset := TRUE;
+bValveState := FALSE;
+bPumpState := FALSE;
 GVL_VAR.bLeakDetected := FALSE;
 GVL_VAR.bBrokenPump := FALSE;
 GVL_VAR.nPumpGain := 0.01;
@@ -193,15 +195,6 @@ fbPID.fSetpointValue := nNewTargetPressure;
 SetTarget := TRUE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="SwitchController" Id="{908a263b-74a4-40f5-a4d0-0f58a1663ca9}">
-      <Declaration><![CDATA[METHOD PUBLIC SwitchController : BOOL
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[]]></ST>
-      </Implementation>
-    </Method>
     <LineIds Name="FB_PumpController">
       <LineId Id="43" Count="0" />
     </LineIds>
@@ -225,7 +218,9 @@ END_VAR
       <LineId Id="13" Count="0" />
     </LineIds>
     <LineIds Name="FB_PumpController.Reset">
-      <LineId Id="6" Count="1" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="7" Count="0" />
       <LineId Id="11" Count="2" />
       <LineId Id="8" Count="0" />
       <LineId Id="10" Count="0" />
@@ -286,9 +281,6 @@ END_VAR
       <LineId Id="5" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_PumpController.SwitchController">
-      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

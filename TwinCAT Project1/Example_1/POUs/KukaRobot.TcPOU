@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="KukaRobot" Id="{468c34ef-d238-4a9f-8ae3-3cdce425a776}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK KukaRobot
+VAR_INPUT
+END_VAR
+VAR
+	wSendData : DWORD;
+END_VAR
+VAR_OUTPUT
+	wOutputWord AT %Q* : DWORD;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="SendData" Id="{b33c5007-83ac-428f-b48d-44026c54e9d4}">
+      <Declaration><![CDATA[METHOD SendData : BOOL
+VAR_INPUT
+	bFailure : BOOL := FALSE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bFailure THEN
+	wOutputWord := 16#00000001;
+ELSE
+	wOutputWord:= 16#00000000;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="KukaRobot">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="KukaRobot.SendData">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

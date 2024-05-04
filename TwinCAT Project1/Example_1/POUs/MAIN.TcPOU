@@ -8,6 +8,7 @@ VAR
 	Pump : FB_Pump;
 	PumpController : FB_PumpController := (nTargetPressure := TARGET_PRESSURE, nMaximumPressure := MAXIMUM_PRESSURE,
 		nMinimumPressure := MINIMUM_PRESSURE, nInitialPressure := Pump.nPressure);
+	KukaBot : KukaRobot;
 	
 	// Variables for Graph
 	aGraphPoints : ARRAY[1..1, 1..1000] OF ST_Point;
@@ -91,6 +92,7 @@ ELSE
 	nPollCount := nPollCount + 1;
 END_IF
 
+KukaBot.SendData(GVL_Var.bLeakDetected);
 Pump();
 // Simulate I/O
 SimulatedIO();]]></ST>
@@ -112,7 +114,10 @@ SimulatedIO();]]></ST>
       <LineId Id="423" Count="0" />
       <LineId Id="380" Count="3" />
       <LineId Id="427" Count="0" />
-      <LineId Id="384" Count="33" />
+      <LineId Id="384" Count="30" />
+      <LineId Id="437" Count="0" />
+      <LineId Id="436" Count="0" />
+      <LineId Id="416" Count="1" />
       <LineId Id="93" Count="0" />
     </LineIds>
   </POU>

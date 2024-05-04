@@ -37,6 +37,9 @@
     <Compile Include="POUs\FB_SimulatedIO.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\KukaRobot.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
