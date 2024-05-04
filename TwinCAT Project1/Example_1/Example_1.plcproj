@@ -21,9 +21,6 @@
     <Compile Include="DUTs\ST_Point.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\ST_PressureData.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="GVLs\GVL_Var.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>

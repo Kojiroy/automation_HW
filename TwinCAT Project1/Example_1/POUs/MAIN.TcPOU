@@ -16,33 +16,56 @@ VAR
 	nCurrentPoint : INT := 1;
 	nPollCount : UINT := 0;
 	
-	// Main Loop Variables
+	// HMI Variables
 	bTurnPumpControllerOn : BOOL := FALSE;
-	bPumpState : BOOL := FALSE;
-	bValveState : BOOL := FALSE;
 	bEmergencyStopPump : BOOL := FALSE;
 	sState : STRING(20) := 'IDLE';
 	bManualPump : BOOL := FALSE;
 	bManualRelease : BOOL := FALSE;
+	
+	// Main Loop Variables
+	bPumpState : BOOL := FALSE;
+	bValveState : BOOL := FALSE;
 END_VAR
+
 VAR CONSTANT
 	MAXIMUM_PRESSURE : USINT := 10;
 	MINIMUM_PRESSURE : USINT := 8;
 	TARGET_PRESSURE : USINT := 9;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF GVL_VAR.bReset THEN
+      <ST><![CDATA[IF GVL_VAR.bReset THEN // RESET State
 	bEmergencyStopPump := FALSE;
+	GVL_VAR.bBrokenPump := FALSE;
+	GVL_Var.bLeakDetected := FALSE;
+	GVL_VAR.bControllerError := FALSE;
 	bTurnPumpControllerOn := FALSE;
 	PumpController.Reset();
 	bManualPump := FALSE;
 	bManualRelease := FALSE;
 	GVL_VAR.bReset := FALSE;
-ELSIF NOT bEmergencyStopPump AND NOT GVL_VAR.bLeakDetected AND NOT GVL_VAR.bBrokenPump THEN // All Systems Normal
+	
+ELSIF GVL_VAR.bBrokenPump THEN // Something Broken State
+	sState := 'SMT_BROKE';
+	Shutdown();
+	
+ELSIF bEmergencyStopPump THEN // Emergency Stopped State
+	sState := 'E_STOPPED';
+	Shutdown();
+	
+ELSIF GVL_Var.bLeakDetected THEN // Leak Detected State
+	sState := 'LEAK!';
+	Shutdown();
+	
+ELSIF GVL_Var.bControllerError THEN // Leak Detected State
+	sState := 'CtrlErr!';
+	Shutdown();
+	
+ELSE // All Systems Normal
 	sState := 'IDLING';
 	IF bTurnPumpControllerOn THEN
-		// PumpController.RunSimpleController(bTurnPumpControllerOn);
-		PumpController.RunPIDController(bTurnPumpControllerOn);
+		// PumpController.RunSimpleController(bTurnPumpControllerOn); // Simple Controller
+		PumpController.RunPIDController(bTurnPumpControllerOn); // PID Controller
 		bPumpState := PumpController.bPumpState;
 		bValveState := PumpController.bValveState;
 		Pump.SetRelay(bPumpState);
@@ -66,17 +89,6 @@ ELSIF NOT bEmergencyStopPump AND NOT GVL_VAR.bLeakDetected AND NOT GVL_VAR.bBrok
 		PUMP.SetRelay(FALSE);
 		PUMP.SetValve(FALSE);
 	END_IF
-	
-ELSE // Some Error! 
-	IF GVL_VAR.bBrokenPump THEN
-		sState := 'PUMP_BROKE';
-	ELSIF bEmergencyStopPump THEN
-		sState := 'E_STOPPED';
-	ELSIF GVL_Var.bLeakDetected THEN
-		sState := 'LEAK!';
-	END_IF
-	Pump.SetRelay(FALSE);
-	bTurnPumpControllerOn := FALSE;
 END_IF
 
 // Save pressure data for graph
@@ -93,16 +105,39 @@ ELSE
 END_IF
 
 KukaBot.SendData(GVL_Var.bLeakDetected);
-Pump();
 // Simulate I/O
-SimulatedIO();]]></ST>
+SimulatedIO();
+Pump(); // Simulated Pump output]]></ST>
     </Implementation>
+    <Method Name="Shutdown" Id="{a0b04ee0-71fe-4c7d-8323-27fdb34f4d74}">
+      <Declaration><![CDATA[METHOD Shutdown : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Pump.SetRelay(FALSE);
+bTurnPumpControllerOn := FALSE;
+Shutdown := TRUE;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="MAIN">
       <LineId Id="361" Count="0" />
       <LineId Id="366" Count="0" />
+      <LineId Id="493" Count="1" />
+      <LineId Id="505" Count="0" />
       <LineId Id="420" Count="1" />
       <LineId Id="367" Count="1" />
       <LineId Id="418" Count="0" />
+      <LineId Id="489" Count="0" />
+      <LineId Id="479" Count="1" />
+      <LineId Id="485" Count="0" />
+      <LineId Id="490" Count="0" />
+      <LineId Id="482" Count="0" />
+      <LineId Id="481" Count="0" />
+      <LineId Id="486" Count="0" />
+      <LineId Id="495" Count="2" />
+      <LineId Id="487" Count="0" />
+      <LineId Id="499" Count="2" />
+      <LineId Id="498" Count="0" />
+      <LineId Id="492" Count="0" />
       <LineId Id="369" Count="4" />
       <LineId Id="422" Count="0" />
       <LineId Id="429" Count="0" />
@@ -114,11 +149,19 @@ SimulatedIO();]]></ST>
       <LineId Id="423" Count="0" />
       <LineId Id="380" Count="3" />
       <LineId Id="427" Count="0" />
-      <LineId Id="384" Count="30" />
+      <LineId Id="384" Count="5" />
+      <LineId Id="488" Count="0" />
+      <LineId Id="402" Count="12" />
       <LineId Id="437" Count="0" />
       <LineId Id="436" Count="0" />
-      <LineId Id="416" Count="1" />
+      <LineId Id="417" Count="0" />
       <LineId Id="93" Count="0" />
+      <LineId Id="477" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.Shutdown">
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

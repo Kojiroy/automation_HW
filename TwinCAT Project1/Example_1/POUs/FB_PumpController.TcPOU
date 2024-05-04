@@ -13,20 +13,23 @@ VAR_OUTPUT
 	bValveState : BOOL := FALSE;
 END_VAR
 VAR
+	// For simple pump controller
+	nPumpHysteresis : REAL := 0.25;
+	
+	// For PID controller
 	nTargetPressure : REAL := nInitialTargetPressure;
-	ctrlTime : LREAL := 0;
 	fbPID : FB_BasicPID := (fSetpointValue := nTargetPressure, fActualValue := nInitialPressure,
 fCtrlCycleTime:=0.01, fKp := GVL_VAR.nKp, fTn := GVL_VAR.nTn, fTv := GVL_VAR.nTv, fTd:= GVL_VAR.nTd);	
 
-	nPumpHysteresis : REAL := 0.25;
-	nLeakHysteresis : REAL := 0.5;
-	nPrevPressure : REAL := nInitialPressure;
+	// Leak detection
+	nLeakHysteresis : REAL := 0.1;
+	nLeakPrevPressure : REAL := nInitialPressure;
 	bCheckedForLeak : BOOL := FALSE;
 	
 	// After <nPumpPollDelay> consecutive increases from pump, check if it's 
 	// increased by at least <nPumpBrokenHysteresis>,
-	nBrokenPumpHysteresis : REAL := 0.2;
-	nBrokenPrevPressure : REAL := nInitialPressure;
+	nBrokenPumpHysteresis : REAL := 0.5;
+	nPrevPressure : REAL := nInitialPressure;
 	nPumpPollDelay : UINT := 50;
 	nPollCount : UINT := 0;
 END_VAR
@@ -43,24 +46,25 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF bCheckedForLeak THEN
-	nPressureDiff := nPrevPressure - GVL_VAR.nPressure;
+	nPressureDiff := nPrevPressure - GVL_VAR.nPressure; // Should be < 0
 	nPollCount := nPollCount + 1;
-	IF nPressureDiff > nLeakHysteresis THEN
-		GVL_VAR.bLeakDetected := TRUE;
-	ELSIF nPollCount > nPumpPollDelay-1 THEN
-		nPressureDiff := GVL_VAR.nPressure - nBrokenPrevPressure;
-		IF nPressureDiff < nBrokenPumpHysteresis THEN
-			GVL_VAR.bBrokenPump := TRUE;
+	IF nPressureDiff > nBrokenPumpHysteresis THEN // Check if pump broke
+		GVL_VAR.bBrokenPump := TRUE;
+	ELSIF nPollCount > nPumpPollDelay THEN // Check for leak
+		nPressureDiff := GVL_VAR.nPressure - nLeakPrevPressure;
+		IF nPressureDiff < nLeakHysteresis THEN
+			GVL_VAR.bLeakDetected := TRUE;
 		END_IF
-		nBrokenPrevPressure := GVL_VAR.nPressure;
+		nLeakPrevPressure := GVL_VAR.nPressure;
 		nPollCount := 0;
 	ELSE
 		GVL_VAR.bLeakDetected := FALSE;
 	END_IF
 	nPrevPressure := GVL_VAR.nPressure;
-ELSE
+	
+ELSE // If it's the first call, save current pressure as prevPressure
 	nPrevPressure := GVL_VAR.nPressure;
-	nBrokenPrevPressure := GVL_VAR.nPressure;
+	nLeakPrevPressure := GVL_VAR.nPressure;
 	bCheckedForLeak := TRUE;
 	nPollCount := 1;
 END_IF]]></ST>
@@ -80,7 +84,7 @@ GVL_VAR.bBrokenPump := FALSE;
 GVL_VAR.nPumpGain := 0.01;
 GVL_VAR.nPassiveLoss := 0.001;
 GVL_VAR.nValveLoss := 0.02;
-Reset := TRUE;]]></ST>
+Reset := TRUE; // Return val]]></ST>
       </Implementation>
     </Method>
     <Method Name="ResetLeakCheck" Id="{2a0dfab5-7ee0-416b-89cd-4cbe13014288}">
@@ -106,18 +110,19 @@ VAR CONSTANT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbPID.fActualValue := GVL_VAR.nPressure;
-fbPID.bReset := FALSE;
-ctrlTime := ctrlTime + 0.01;
 fbPID();
+fbPID.bReset := FALSE;
+
 IF fbPID.nErrorStatus > 0 THEN
 	bPumpState := FALSE;
 	bValveState := FALSE;
 	RunPIDController := FALSE;
-ELSIF GVL_VAR.nPressure > nTargetPressure THEN
+	GVL_VAR.bControllerError := TRUE;
+ELSIF GVL_VAR.nPressure > nTargetPressure THEN // Increase pressure
 	bPumpState := FALSE;
 	bValveState := TRUE;
 	IF GVL_VAR.nPumpGain > pumpGainMin THEN
-		IF fbPID.fCtrlOutput > 0 THEN
+		IF fbPID.fCtrlOutput > 0 THEN // Prevents error
 			GVL_VAR.nPumpGain := GVL_VAR.nPumpGain - fbPID.fCtrlOutput*backBias;
 		ELSE
 			GVL_VAR.nPumpGain := GVL_VAR.nPumpGain + fbPID.fCtrlOutput*backBias;
@@ -126,7 +131,7 @@ ELSIF GVL_VAR.nPressure > nTargetPressure THEN
 		GVL_VAR.nPumpGain := pumpGainMin;
 	END_IF
 	IF GVL_VAR.nValveLoss < valveLossMax THEN
-		IF fbPID.fCtrlOutput > 0 THEN
+		IF fbPID.fCtrlOutput > 0 THEN // Prevents error
 			GVL_VAR.nValveLoss := GVL_VAR.nValveLoss + fbPID.fCtrlOutput*forwardBias;
 		ELSE
 			GVL_VAR.nValveLoss := GVL_VAR.nValveLoss - fbPID.fCtrlOutput*forwardBias;
@@ -134,7 +139,7 @@ ELSIF GVL_VAR.nPressure > nTargetPressure THEN
 	ELSE
 		GVL_VAR.nValveLoss := valveLossMax;
 	END_IF
-ELSE
+ELSE // Decrease pressure
 	bPumpState := TRUE;
 	bValveState := FALSE;
 	IF GVL_VAR.nValveLoss > valveLossMin THEN
@@ -165,10 +170,7 @@ VAR_INPUT
 	bState : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[GVL_VAR.nPassiveLoss := 0.001;
-GVL_VAR.nPumpGain := 0.01;
-GVL_VAR.nValveLoss := 0.02;
-bValveState := FALSE;
+        <ST><![CDATA[bValveState := FALSE;
 IF bState THEN
 	IF GVL_VAR.nPressure < nTargetPressure-nPumpHysteresis OR GVL_VAR.nPressure < nMinimumPressure+nPumpHysteresis THEN
 		bPumpState := TRUE;
@@ -210,6 +212,7 @@ SetTarget := TRUE;]]></ST>
       <LineId Id="21" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="26" Count="0" />
+      <LineId Id="45" Count="0" />
       <LineId Id="22" Count="0" />
       <LineId Id="24" Count="0" />
       <LineId Id="36" Count="0" />
@@ -232,10 +235,11 @@ SetTarget := TRUE;]]></ST>
     </LineIds>
     <LineIds Name="FB_PumpController.RunPIDController">
       <LineId Id="8" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="52" Count="1" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="111" Count="1" />
       <LineId Id="47" Count="1" />
       <LineId Id="50" Count="1" />
+      <LineId Id="113" Count="0" />
       <LineId Id="14" Count="1" />
       <LineId Id="17" Count="0" />
       <LineId Id="32" Count="0" />
@@ -268,7 +272,7 @@ SetTarget := TRUE;]]></ST>
       <LineId Id="16" Count="0" />
     </LineIds>
     <LineIds Name="FB_PumpController.RunSimpleController">
-      <LineId Id="69" Count="3" />
+      <LineId Id="72" Count="0" />
       <LineId Id="48" Count="2" />
       <LineId Id="60" Count="0" />
       <LineId Id="51" Count="1" />
