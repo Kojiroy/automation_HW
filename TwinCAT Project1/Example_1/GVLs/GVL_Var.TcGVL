@@ -13,6 +13,13 @@ VAR_GLOBAL
 	bLeakDetected : BOOL := FALSE;
 	bBrokenPump : BOOL := FALSE;
 	bReset: BOOL := FALSE;
+	nPumpGain : LREAL := 0.01;
+	nPassiveLoss : LREAL := 0.001;
+	nValveLoss : LREAL := 0.02;
+	nKp : LREAL := 0.001;
+	nTn : LREAL := 0.1;
+	nTv : LREAL := 0.1;
+	nTd : LREAL := 0.1;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

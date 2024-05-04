@@ -17,7 +17,7 @@
     "mainTickMaxValue": 50.0,
     "showLabels": true,
     "showAxisName": true,
-    "axisName": "y-axis 1",
+    "axisName": "Voltage",
     "axisNameFontFamily": "",
     "axisNameFontSize": 15,
     "axisNameFontSizeUnit": "px",

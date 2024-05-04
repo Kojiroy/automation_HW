@@ -3,15 +3,21 @@
   <POU Name="FB_PumpController" Id="{a50fad6d-a003-4691-b885-4dda779a3353}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_PumpController
 VAR_INPUT
-	nTargetPressure : USINT := 9; // Volts
-	nMaximumPressure : USINT := 10;
-	nMinimumPressure : USINT := 8;
+	nInitialTargetPressure : REAL := 9; // Volts
+	nMaximumPressure : REAL := 10;
+	nMinimumPressure : REAL := 8;
 	nInitialPressure : REAL;
 END_VAR
 VAR_OUTPUT
 	bPumpState : BOOL := FALSE;
+	bValveState : BOOL := FALSE;
 END_VAR
 VAR
+	nTargetPressure : REAL := nInitialTargetPressure;
+	ctrlTime : LREAL := 0;
+	fbPID : FB_BasicPID := (fSetpointValue := nTargetPressure, fActualValue := nInitialPressure,
+fCtrlCycleTime:=0.01, fKp := GVL_VAR.nKp, fTn := GVL_VAR.nTn, fTv := GVL_VAR.nTv, fTd:= GVL_VAR.nTd);	
+
 	nPumpHysteresis : REAL := 0.25;
 	nLeakHysteresis : REAL := 0.5;
 	nPrevPressure : REAL := nInitialPressure;
@@ -23,7 +29,9 @@ VAR
 	nBrokenPrevPressure : REAL := nInitialPressure;
 	nPumpPollDelay : UINT := 50;
 	nPollCount : UINT := 0;
-
+END_VAR
+VAR CONSTANT
+	
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -58,6 +66,21 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Reset" Id="{7eb96bf1-2f85-40d0-ade1-8997c96e83b4}">
+      <Declaration><![CDATA[METHOD PUBLIC Reset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbPID.bReset := TRUE;
+GVL_VAR.bLeakDetected := FALSE;
+GVL_VAR.bBrokenPump := FALSE;
+GVL_VAR.nPumpGain := 0.01;
+GVL_VAR.nPassiveLoss := 0.001;
+GVL_VAR.nValveLoss := 0.02;
+Reset := TRUE;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ResetLeakCheck" Id="{2a0dfab5-7ee0-416b-89cd-4cbe13014288}">
       <Declaration><![CDATA[METHOD ResetLeakCheck : BOOL]]></Declaration>
       <Implementation>
@@ -66,17 +89,89 @@ nPollCount := 0;
 ResetLeakCheck := TRUE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Run" Id="{eeca5ea1-f0a1-4ca1-9d59-493b90ef8339}">
-      <Declaration><![CDATA[METHOD Run
+    <Method Name="RunPIDController" Id="{44d17901-2514-4345-842c-9a2319dd694f}">
+      <Declaration><![CDATA[METHOD RunPIDController : BOOL
+VAR_INPUT
+	bState : BOOL;
+END_VAR
+VAR CONSTANT
+	pumpGainMax : REAL := 0.5;
+	pumpGainMin : LREAL := 0.001;	
+	valveLossMax : REAL := 0.5;
+	valveLossMin : LREAL := 0.001;
+	forwardBias : REAL := 0.8;
+	backBias : REAL := 1.2;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbPID.fActualValue := GVL_VAR.nPressure;
+fbPID.bReset := FALSE;
+ctrlTime := ctrlTime + 0.01;
+fbPID();
+IF fbPID.nErrorStatus > 0 THEN
+	bPumpState := FALSE;
+	bValveState := FALSE;
+	RunPIDController := FALSE;
+ELSIF GVL_VAR.nPressure > nTargetPressure THEN
+	bPumpState := FALSE;
+	bValveState := TRUE;
+	IF GVL_VAR.nPumpGain > pumpGainMin THEN
+		IF fbPID.fCtrlOutput > 0 THEN
+			GVL_VAR.nPumpGain := GVL_VAR.nPumpGain - fbPID.fCtrlOutput*backBias;
+		ELSE
+			GVL_VAR.nPumpGain := GVL_VAR.nPumpGain + fbPID.fCtrlOutput*backBias;
+		END_IF
+	ELSE
+		GVL_VAR.nPumpGain := pumpGainMin;
+	END_IF
+	IF GVL_VAR.nValveLoss < valveLossMax THEN
+		IF fbPID.fCtrlOutput > 0 THEN
+			GVL_VAR.nValveLoss := GVL_VAR.nValveLoss + fbPID.fCtrlOutput*forwardBias;
+		ELSE
+			GVL_VAR.nValveLoss := GVL_VAR.nValveLoss - fbPID.fCtrlOutput*forwardBias;
+		END_IF
+	ELSE
+		GVL_VAR.nValveLoss := valveLossMax;
+	END_IF
+ELSE
+	bPumpState := TRUE;
+	bValveState := FALSE;
+	IF GVL_VAR.nValveLoss > valveLossMin THEN
+		IF fbPID.fCtrlOutput > 0 THEN
+			GVL_VAR.nValveLoss := GVL_VAR.nValveLoss - fbPID.fCtrlOutput*backBias;
+		ELSE
+			GVL_VAR.nValveLoss := GVL_VAR.nValveLoss + fbPID.fCtrlOutput*backBias;
+		END_IF
+	ELSE
+		GVL_VAR.nValveLoss := valveLossMin;
+	END_IF
+	IF GVL_VAR.nPumpGain < pumpGainMax THEN
+		IF fbPID.fCtrlOutput > 0 THEN
+			GVL_VAR.nPumpGain := GVL_VAR.nPumpGain + fbPID.fCtrlOutput*forwardBias;
+		ELSE
+			GVL_VAR.nPumpGain := GVL_VAR.nPumpGain - fbPID.fCtrlOutput*forwardBias;
+		END_IF
+		
+	ELSE
+		GVL_VAR.nPumpGain := pumpGainMax;
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunSimpleController" Id="{eeca5ea1-f0a1-4ca1-9d59-493b90ef8339}">
+      <Declaration><![CDATA[METHOD RunSimpleController
 VAR_INPUT
 	bState : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF bState THEN
-	IF GVL_VAR.nPressure < nTargetPressure-nPumpHysteresis OR GVL_VAR.nPressure < nMinimumPressure-nPumpHysteresis THEN
+        <ST><![CDATA[GVL_VAR.nPassiveLoss := 0.001;
+GVL_VAR.nPumpGain := 0.01;
+GVL_VAR.nValveLoss := 0.02;
+bValveState := FALSE;
+IF bState THEN
+	IF GVL_VAR.nPressure < nTargetPressure-nPumpHysteresis OR GVL_VAR.nPressure < nMinimumPressure+nPumpHysteresis THEN
 		bPumpState := TRUE;
 		LeakDetection();
-	ELSIF GVL_VAR.nPressure > nTargetPressure+nPumpHysteresis OR GVL_VAR.nPressure > nMaximumPressure+nPumpHysteresis THEN
+	ELSIF GVL_VAR.nPressure > nTargetPressure+nPumpHysteresis OR GVL_VAR.nPressure > nMaximumPressure-nPumpHysteresis THEN
 		bPumpState := FALSE;
 		ResetLeakCheck();
 	END_IF
@@ -84,6 +179,27 @@ ELSE
 	bPumpState := FALSE;
 	ResetLeakCheck();
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetTarget" Id="{d0f9435c-04a5-4837-8a6e-c2e231d19305}">
+      <Declaration><![CDATA[METHOD SetTarget : BOOL
+VAR_INPUT
+	nNewTargetPressure : REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[nTargetPressure := nNewTargetPressure;
+fbPID.fSetpointValue := nNewTargetPressure;
+SetTarget := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SwitchController" Id="{908a263b-74a4-40f5-a4d0-0f58a1663ca9}">
+      <Declaration><![CDATA[METHOD PUBLIC SwitchController : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_PumpController">
@@ -108,12 +224,56 @@ END_IF]]></ST>
       <LineId Id="30" Count="0" />
       <LineId Id="13" Count="0" />
     </LineIds>
+    <LineIds Name="FB_PumpController.Reset">
+      <LineId Id="6" Count="1" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
     <LineIds Name="FB_PumpController.ResetLeakCheck">
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="8" Count="0" />
     </LineIds>
-    <LineIds Name="FB_PumpController.Run">
+    <LineIds Name="FB_PumpController.RunPIDController">
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="50" Count="1" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="77" Count="2" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="59" Count="1" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="91" Count="3" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="57" Count="1" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="96" Count="3" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_PumpController.RunSimpleController">
+      <LineId Id="69" Count="3" />
       <LineId Id="48" Count="2" />
       <LineId Id="60" Count="0" />
       <LineId Id="51" Count="1" />
@@ -121,6 +281,14 @@ END_IF]]></ST>
       <LineId Id="53" Count="2" />
       <LineId Id="62" Count="0" />
       <LineId Id="21" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_PumpController.SetTarget">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_PumpController.SwitchController">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

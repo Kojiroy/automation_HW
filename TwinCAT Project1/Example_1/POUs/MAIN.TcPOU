@@ -18,6 +18,7 @@ VAR
 	// Main Loop Variables
 	bTurnPumpControllerOn : BOOL := FALSE;
 	bPumpState : BOOL := FALSE;
+	bValveState : BOOL := FALSE;
 	bEmergencyStopPump : BOOL := FALSE;
 	sState : STRING(20) := 'IDLE';
 	bManualPump : BOOL := FALSE;
@@ -31,27 +32,33 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF GVL_VAR.bReset THEN
 	bEmergencyStopPump := FALSE;
-	GVL_VAR.bLeakDetected := FALSE;
-	GVL_VAR.bBrokenPump := FALSE;
-	GVL_VAR.bReset := FALSE;
 	bTurnPumpControllerOn := FALSE;
+	PumpController.Reset();
 	bManualPump := FALSE;
 	bManualRelease := FALSE;
+	GVL_VAR.bReset := FALSE;
 ELSIF NOT bEmergencyStopPump AND NOT GVL_VAR.bLeakDetected AND NOT GVL_VAR.bBrokenPump THEN // All Systems Normal
 	sState := 'IDLING';
 	IF bTurnPumpControllerOn THEN
-		PumpController.Run(bTurnPumpControllerOn);
+		// PumpController.RunSimpleController(bTurnPumpControllerOn);
+		PumpController.RunPIDController(bTurnPumpControllerOn);
 		bPumpState := PumpController.bPumpState;
+		bValveState := PumpController.bValveState;
 		Pump.SetRelay(bPumpState);
+		Pump.SetValve(bValveState);
 		IF bPumpState THEN
 			sState := 'PUMPING';
+		ELSIF bValveState THEN
+			sState := 'RELEASING';
 		END_IF
 	ELSIF bManualRelease THEN
 		sState := 'M_RELEASE';
+		GVL_VAR.nValveLoss := 0.02;
 		Pump.SetValve(TRUE);
 		Pump.SetRelay(FALSE);
 	ELSIF bManualPump THEN
 		sState := 'M_PUMPING';
+		GVL_VAR.nPumpGain := 0.01;
 		Pump.SetRelay(TRUE);
 		Pump.SetValve(FALSE);
 	ELSE
@@ -89,47 +96,23 @@ Pump();
 SimulatedIO();]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="286" Count="1" />
-      <LineId Id="289" Count="0" />
-      <LineId Id="359" Count="0" />
-      <LineId Id="290" Count="0" />
-      <LineId Id="293" Count="0" />
-      <LineId Id="334" Count="1" />
-      <LineId Id="119" Count="0" />
-      <LineId Id="343" Count="0" />
-      <LineId Id="321" Count="0" />
-      <LineId Id="324" Count="3" />
-      <LineId Id="330" Count="0" />
-      <LineId Id="338" Count="1" />
-      <LineId Id="344" Count="0" />
-      <LineId Id="346" Count="0" />
-      <LineId Id="336" Count="1" />
-      <LineId Id="345" Count="0" />
-      <LineId Id="333" Count="0" />
-      <LineId Id="349" Count="0" />
-      <LineId Id="351" Count="0" />
-      <LineId Id="354" Count="1" />
-      <LineId Id="323" Count="0" />
-      <LineId Id="168" Count="0" />
-      <LineId Id="116" Count="0" />
-      <LineId Id="356" Count="1" />
-      <LineId Id="284" Count="1" />
-      <LineId Id="281" Count="2" />
-      <LineId Id="117" Count="0" />
-      <LineId Id="291" Count="0" />
-      <LineId Id="118" Count="0" />
-      <LineId Id="191" Count="1" />
-      <LineId Id="214" Count="2" />
-      <LineId Id="202" Count="0" />
-      <LineId Id="213" Count="0" />
-      <LineId Id="212" Count="0" />
-      <LineId Id="206" Count="0" />
-      <LineId Id="211" Count="0" />
-      <LineId Id="209" Count="1" />
-      <LineId Id="204" Count="0" />
-      <LineId Id="292" Count="0" />
-      <LineId Id="276" Count="0" />
-      <LineId Id="208" Count="0" />
+      <LineId Id="361" Count="0" />
+      <LineId Id="366" Count="0" />
+      <LineId Id="420" Count="1" />
+      <LineId Id="367" Count="1" />
+      <LineId Id="418" Count="0" />
+      <LineId Id="369" Count="4" />
+      <LineId Id="422" Count="0" />
+      <LineId Id="429" Count="0" />
+      <LineId Id="374" Count="0" />
+      <LineId Id="430" Count="0" />
+      <LineId Id="375" Count="1" />
+      <LineId Id="432" Count="1" />
+      <LineId Id="377" Count="2" />
+      <LineId Id="423" Count="0" />
+      <LineId Id="380" Count="3" />
+      <LineId Id="427" Count="0" />
+      <LineId Id="384" Count="33" />
       <LineId Id="93" Count="0" />
     </LineIds>
   </POU>
