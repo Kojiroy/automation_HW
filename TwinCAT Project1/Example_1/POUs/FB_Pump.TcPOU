@@ -3,15 +3,27 @@
   <POU Name="FB_Pump" Id="{2189f6e3-949f-4eb4-811c-6a2452780df7}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
 VAR_OUTPUT
-	nPressure: INT; // [Volts]
+	nPressure: REAL; // [Volts]
 END_VAR
 VAR
 	// bRelayOn AT %Q* : BOOL := FALSE; // True = On
 	bRelayOn : BOOL := FALSE;
 	// nCurrentPressure AT %I* : REAL; // Volts
+	bValveOpen : BOOL := FALSE;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[// For Simulation
+IF bValveOpen THEN
+	GVL_VAR.bValve := TRUE;
+	GVL_VAR.bPump := FALSE;
+ELSIF bRelayOn THEN
+	GVL_VAR.bPump := TRUE;
+	GVL_VAR.bValve := FALSE;
+ELSE
+	GVL_VAR.bPump := FALSE;
+	GVL_VAR.bValve := FALSE;
+END_IF
+nPressure := GVL_VAR.nPressure;]]></ST>
     </Implementation>
     <Method Name="SetRelay" Id="{ef407a0f-9ab4-4891-b141-81e8459e209e}">
       <Declaration><![CDATA[METHOD PUBLIC SetRelay : BOOL
@@ -20,25 +32,37 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[bRelayOn := bRelayState;
-SetRelay := TRUE;
-
-// For Simulation
-IF bRelayOn THEN
-	GVL_VAR.bPump := TRUE;
-ELSE
-	GVL_VAR.bPump := FALSE;
-END_IF]]></ST>
+SetRelay := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetValve" Id="{78bc9e55-eb77-405d-b9c0-9a18632c1385}">
+      <Declaration><![CDATA[METHOD PUBLIC SetValve : BOOL
+VAR_INPUT
+	bValveState : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bValveOpen := bValveState;
+SetValve := TRUE;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Pump">
+      <LineId Id="18" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="41" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="34" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.SetRelay">
       <LineId Id="21" Count="0" />
       <LineId Id="8" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="34" Count="4" />
-      <LineId Id="33" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.SetValve">
+      <LineId Id="9" Count="0" />
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

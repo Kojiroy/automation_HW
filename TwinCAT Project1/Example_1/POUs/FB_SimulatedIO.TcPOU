@@ -8,18 +8,29 @@ END_VAR
 VAR CONSTANT
 	PUMP_GAIN : REAL := 0.01;
 	PASSIVE_LOSS : REAL := 0.001;
+	VALVE_LOSS : REAL := 0.02;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF GVL_VAR.bPump THEN
 	GVL_VAR.nPressure := GVL_VAR.nPressure + PUMP_GAIN;
 ELSIF GVL_VAR.nPressure > 1 THEN
-	GVL_VAR.nPressure := GVL_VAR.nPressure - PASSIVE_LOSS;
+	IF GVL_VAR.bValve THEN
+		GVL_VAR.nPressure := GVL_VAR.nPressure - VALVE_LOSS;
+	ELSE
+		GVL_VAR.nPressure := GVL_VAR.nPressure - PASSIVE_LOSS;	
+	END_IF
+ELSE
+	GVL_VAR.nPressure := 1;
 END_IF]]></ST>
     </Implementation>
     <LineIds Name="FB_SimulatedIO">
       <LineId Id="9" Count="0" />
       <LineId Id="13" Count="0" />
-      <LineId Id="15" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="1" />
       <LineId Id="14" Count="0" />
     </LineIds>
   </POU>

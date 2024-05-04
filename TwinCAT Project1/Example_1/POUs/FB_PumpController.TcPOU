@@ -6,16 +6,66 @@ VAR_INPUT
 	nTargetPressure : USINT := 9; // Volts
 	nMaximumPressure : USINT := 10;
 	nMinimumPressure : USINT := 8;
+	nInitialPressure : REAL;
 END_VAR
 VAR_OUTPUT
 	bPumpState : BOOL := FALSE;
 END_VAR
 VAR
-	nHysteresis : REAL := 0.5;
+	nPumpHysteresis : REAL := 0.25;
+	nLeakHysteresis : REAL := 0.5;
+	nPrevPressure : REAL := nInitialPressure;
+	bCheckedForLeak : BOOL := FALSE;
+	
+	// After <nPumpPollDelay> consecutive increases from pump, check if it's 
+	// increased by at least <nPumpBrokenHysteresis>,
+	nBrokenPumpHysteresis : REAL := 0.2;
+	nBrokenPrevPressure : REAL := nInitialPressure;
+	nPumpPollDelay : UINT := 50;
+	nPollCount : UINT := 0;
+
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="LeakDetection" Id="{472df253-a6d4-49df-961f-0d688ac52440}">
+      <Declaration><![CDATA[METHOD PRIVATE LeakDetection : BOOL
+VAR
+	nPressureDiff : REAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bCheckedForLeak THEN
+	nPressureDiff := nPrevPressure - GVL_VAR.nPressure;
+	nPollCount := nPollCount + 1;
+	IF nPressureDiff > nLeakHysteresis THEN
+		GVL_VAR.bLeakDetected := TRUE;
+	ELSIF nPollCount > nPumpPollDelay-1 THEN
+		nPressureDiff := GVL_VAR.nPressure - nBrokenPrevPressure;
+		IF nPressureDiff < nBrokenPumpHysteresis THEN
+			GVL_VAR.bBrokenPump := TRUE;
+		END_IF
+		nBrokenPrevPressure := GVL_VAR.nPressure;
+		nPollCount := 0;
+	ELSE
+		GVL_VAR.bLeakDetected := FALSE;
+	END_IF
+	nPrevPressure := GVL_VAR.nPressure;
+ELSE
+	nPrevPressure := GVL_VAR.nPressure;
+	nBrokenPrevPressure := GVL_VAR.nPressure;
+	bCheckedForLeak := TRUE;
+	nPollCount := 1;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ResetLeakCheck" Id="{2a0dfab5-7ee0-416b-89cd-4cbe13014288}">
+      <Declaration><![CDATA[METHOD ResetLeakCheck : BOOL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bCheckedForLeak := FALSE;
+nPollCount := 0;
+ResetLeakCheck := TRUE;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Run" Id="{eeca5ea1-f0a1-4ca1-9d59-493b90ef8339}">
       <Declaration><![CDATA[METHOD Run
 VAR_INPUT
@@ -23,21 +73,53 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF bState THEN
-	IF GVL_VAR.nPressure < nTargetPressure-nHysteresis OR GVL_VAR.nPressure < nMinimumPressure-nHysteresis THEN
+	IF GVL_VAR.nPressure < nTargetPressure-nPumpHysteresis OR GVL_VAR.nPressure < nMinimumPressure-nPumpHysteresis THEN
 		bPumpState := TRUE;
-	ELSIF GVL_VAR.nPressure > nTargetPressure+nHysteresis OR GVL_VAR.nPressure > nMaximumPressure+nHysteresis THEN
+		LeakDetection();
+	ELSIF GVL_VAR.nPressure > nTargetPressure+nPumpHysteresis OR GVL_VAR.nPressure > nMaximumPressure+nPumpHysteresis THEN
 		bPumpState := FALSE;
+		ResetLeakCheck();
 	END_IF
 ELSE
 	bPumpState := FALSE;
+	ResetLeakCheck();
 END_IF]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_PumpController">
       <LineId Id="43" Count="0" />
     </LineIds>
+    <LineIds Name="FB_PumpController.LeakDetection">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="4" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_PumpController.ResetLeakCheck">
+      <LineId Id="7" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
     <LineIds Name="FB_PumpController.Run">
-      <LineId Id="48" Count="7" />
+      <LineId Id="48" Count="2" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="53" Count="2" />
+      <LineId Id="62" Count="0" />
       <LineId Id="21" Count="0" />
     </LineIds>
   </POU>

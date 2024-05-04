@@ -4,10 +4,10 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 	// Objects
+	SimulatedIO : FB_SimulatedIO;
 	Pump : FB_Pump;
 	PumpController : FB_PumpController := (nTargetPressure := TARGET_PRESSURE, nMaximumPressure := MAXIMUM_PRESSURE,
-		nMinimumPressure := MINIMUM_PRESSURE);
-	SimulatedIO : FB_SimulatedIO;
+		nMinimumPressure := MINIMUM_PRESSURE, nInitialPressure := Pump.nPressure);
 	
 	// Variables for Graph
 	aGraphPoints : ARRAY[1..1, 1..1000] OF ST_Point;
@@ -20,6 +20,8 @@ VAR
 	bPumpState : BOOL := FALSE;
 	bEmergencyStopPump : BOOL := FALSE;
 	sState : STRING(20) := 'IDLE';
+	bManualPump : BOOL := FALSE;
+	bManualRelease : BOOL := FALSE;
 END_VAR
 VAR CONSTANT
 	MAXIMUM_PRESSURE : USINT := 10;
@@ -27,18 +29,46 @@ VAR CONSTANT
 	TARGET_PRESSURE : USINT := 9;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF NOT bEmergencyStopPump THEN
-	PumpController.Run(bTurnPumpControllerOn);
-	bPumpState := PumpController.bPumpState;
-	Pump.SetRelay(bPumpState);
-	IF bPumpState THEN
-		sState := 'PUMPING';
+      <ST><![CDATA[IF GVL_VAR.bReset THEN
+	bEmergencyStopPump := FALSE;
+	GVL_VAR.bLeakDetected := FALSE;
+	GVL_VAR.bBrokenPump := FALSE;
+	GVL_VAR.bReset := FALSE;
+	bTurnPumpControllerOn := FALSE;
+	bManualPump := FALSE;
+	bManualRelease := FALSE;
+ELSIF NOT bEmergencyStopPump AND NOT GVL_VAR.bLeakDetected AND NOT GVL_VAR.bBrokenPump THEN // All Systems Normal
+	sState := 'IDLING';
+	IF bTurnPumpControllerOn THEN
+		PumpController.Run(bTurnPumpControllerOn);
+		bPumpState := PumpController.bPumpState;
+		Pump.SetRelay(bPumpState);
+		IF bPumpState THEN
+			sState := 'PUMPING';
+		END_IF
+	ELSIF bManualRelease THEN
+		sState := 'M_RELEASE';
+		Pump.SetValve(TRUE);
+		Pump.SetRelay(FALSE);
+	ELSIF bManualPump THEN
+		sState := 'M_PUMPING';
+		Pump.SetRelay(TRUE);
+		Pump.SetValve(FALSE);
 	ELSE
-		sState := 'IDLING';
+		PUMP.SetRelay(FALSE);
+		PUMP.SetValve(FALSE);
 	END_IF
-ELSE
-	sState := 'E_STOPPED';
+	
+ELSE // Some Error! 
+	IF GVL_VAR.bBrokenPump THEN
+		sState := 'PUMP_BROKE';
+	ELSIF bEmergencyStopPump THEN
+		sState := 'E_STOPPED';
+	ELSIF GVL_Var.bLeakDetected THEN
+		sState := 'LEAK!';
+	END_IF
 	Pump.SetRelay(FALSE);
+	bTurnPumpControllerOn := FALSE;
 END_IF
 
 // Save pressure data for graph
@@ -47,25 +77,47 @@ IF nCurrentPoint > 1000 THEN
 	nPollCount := 2;
 ELSIF nPollCount > 9 THEN
 	aGraphPoints[1, nCurrentPoint].x := nCurrentPoint;
-	aGraphPoints[1, nCurrentPoint].y := GVL_Var.nPressure;
+	aGraphPoints[1, nCurrentPoint].y := Pump.nPressure;
 	nPollCount := 0;
 	nCurrentPoint := 1 + nCurrentPoint;
 ELSE
 	nPollCount := nPollCount + 1;
 END_IF
 
+Pump();
+// Simulate I/O
 SimulatedIO();]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
+      <LineId Id="286" Count="1" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="290" Count="0" />
+      <LineId Id="293" Count="0" />
+      <LineId Id="334" Count="1" />
       <LineId Id="119" Count="0" />
-      <LineId Id="110" Count="1" />
-      <LineId Id="115" Count="0" />
-      <LineId Id="164" Count="2" />
-      <LineId Id="169" Count="0" />
+      <LineId Id="343" Count="0" />
+      <LineId Id="321" Count="0" />
+      <LineId Id="324" Count="3" />
+      <LineId Id="330" Count="0" />
+      <LineId Id="338" Count="1" />
+      <LineId Id="344" Count="0" />
+      <LineId Id="346" Count="0" />
+      <LineId Id="336" Count="1" />
+      <LineId Id="345" Count="0" />
+      <LineId Id="333" Count="0" />
+      <LineId Id="349" Count="0" />
+      <LineId Id="351" Count="0" />
+      <LineId Id="354" Count="1" />
+      <LineId Id="323" Count="0" />
       <LineId Id="168" Count="0" />
       <LineId Id="116" Count="0" />
-      <LineId Id="138" Count="0" />
-      <LineId Id="117" Count="1" />
+      <LineId Id="356" Count="1" />
+      <LineId Id="284" Count="1" />
+      <LineId Id="281" Count="2" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="291" Count="0" />
+      <LineId Id="118" Count="0" />
       <LineId Id="191" Count="1" />
       <LineId Id="214" Count="2" />
       <LineId Id="202" Count="0" />
@@ -75,6 +127,8 @@ SimulatedIO();]]></ST>
       <LineId Id="211" Count="0" />
       <LineId Id="209" Count="1" />
       <LineId Id="204" Count="0" />
+      <LineId Id="292" Count="0" />
+      <LineId Id="276" Count="0" />
       <LineId Id="208" Count="0" />
       <LineId Id="93" Count="0" />
     </LineIds>

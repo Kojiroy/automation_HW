@@ -1,0 +1,57 @@
+{
+  "function": {
+    "name": "StatusBg",
+    "namespace": "TcHmi.Functions.TcHmiProject1",
+    "displayName": "StatusBg",
+    "description": "",
+    "waitMode": "Synchronous",
+    "category": "",
+    "returnValue": {
+      "type": "tchmi:framework#/definitions/Color"
+    },
+    "visible": true,
+    "injectContextObject": false,
+    "arguments": [
+      {
+        "name": "leakDetected",
+        "displayName": "leakDetected",
+        "type": "tchmi:general#/definitions/BOOL",
+        "description": "This is an important Parameter which does... This text is used in a tooltip.",
+        "defaultValue": null,
+        "required": true,
+        "bindable": true,
+        "restParameter": false,
+        "asReference": false,
+        "allowControlAttributeBindingOptions": false
+      },
+      {
+        "name": "Stop",
+        "displayName": "Stop",
+        "type": "tchmi:general#/definitions/BOOL",
+        "description": "",
+        "defaultValue": "",
+        "required": true,
+        "bindable": true,
+        "restParameter": false,
+        "asReference": false,
+        "allowControlAttributeBindingOptions": false
+      }
+    ]
+  },
+  "$schema": "./../Packages/Beckhoff.TwinCAT.HMI.Framework.12.760.59/runtimes/native1.12-tchmi/Schema/FunctionDescription.Schema.json",
+  "apiVersion": 1,
+  "version": {
+    "full": "0.0.0.0",
+    "major": 0,
+    "minor": 0,
+    "revision": 0,
+    "build": 0
+  },
+  "dependencyFiles": [
+    {
+      "name": "FunctionJS1.js",
+      "type": "JavaScript",
+      "description": ""
+    }
+  ]
+}

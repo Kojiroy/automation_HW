@@ -9,6 +9,10 @@ VAR_GLOBAL
 	nPressure: REAL := 1;
 	// Whether the pump is on
 	bPump: BOOL := FALSE;
+	bValve : BOOL := FALSE;
+	bLeakDetected : BOOL := FALSE;
+	bBrokenPump : BOOL := FALSE;
+	bReset: BOOL := FALSE;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>
