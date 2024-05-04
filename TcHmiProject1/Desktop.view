@@ -31,13 +31,6 @@
         "objectType": "JavaScript",
         "active": true,
         "sourceLines": [
-          "TcHmi.Symbol.writeEx('%s%PLC1.MAIN.bTurnPumpControllerOn%/s%', false, function(data) {",
-          "\tif (data.error !== TcHmi.Errors.NONE) {",
-          "        console.error('Error writing to symbol:', data.error);",
-          "    } else {",
-          "        console.log(`Turned pump off`);",
-          "    }",
-          "});",
           "TcHmi.Symbol.writeEx('%s%PLC1.MAIN.bEmergencyStopPump%/s%', true, function(data) {",
           "\tif (data.error !== TcHmi.Errors.NONE) {",
           "        console.error('Error writing to symbol:', data.error);",
@@ -141,13 +134,9 @@
 </div>
 <div id="TcHmiTextblock_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="24" data-tchmi-height-unit="px" data-tchmi-left="54" data-tchmi-left-unit="px" data-tchmi-text="Status" data-tchmi-top="21" data-tchmi-top-unit="px" data-tchmi-width="65" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="25" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center">
 </div>
-<div id="TcHmiTextblockStatus" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="45" data-tchmi-height-unit="px" data-tchmi-left="19" data-tchmi-left-unit="px" data-tchmi-text="%s%PLC1.MAIN.sState%/s%" data-tchmi-top="55" data-tchmi-top-unit="px" data-tchmi-width="130" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="25">
+<div id="TcHmiTextblockStatus" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="45" data-tchmi-height-unit="px" data-tchmi-left="19" data-tchmi-left-unit="px" data-tchmi-text="%s%PLC1.MAIN.sState%/s%" data-tchmi-top="55" data-tchmi-top-unit="px" data-tchmi-width="130" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-text-font-size="25" data-tchmi-is-enabled="false" data-tchmi-background-color="%f%TcHmi.Functions.TcHmiProject1.StatusBg(%s%PLC1.GVL_Var.bLeakDetected%/s%, %s%PLC1.MAIN.bEmergencyStopPump%/s%)%/f%">
 
-<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
-[
-  "GreenBg"
-]
-</script>
+
 
 
 
@@ -162,6 +151,32 @@
   "bottomLeftUnit": "px",
   "bottomRightUnit": "px"
 }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-text-color" type="application/json">
+{
+  "color": "rgba(0, 0, 0, 1)"
+}
+</script>
+
+
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
+[
+  "GreenBg"
+]
 </script>
 </div>
 <div id="TcHmiRegionMain" data-tchmi-type="TcHmi.Controls.System.TcHmiRegion" data-tchmi-height="500" data-tchmi-height-unit="px" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="150" data-tchmi-top-unit="px" data-tchmi-width="800" data-tchmi-width-unit="px" data-tchmi-target-content="Contents/Content_0.content" data-tchmi-scale-mode="ScaleToFit">
@@ -202,11 +217,11 @@
         "objectType": "JavaScript",
         "active": true,
         "sourceLines": [
-          "TcHmi.Symbol.writeEx('%s%PLC1.MAIN.bEmergencyStopPump%/s%', false, function(data) {",
+          "TcHmi.Symbol.writeEx('%s%PLC1.GVL_Var.bReset%/s%', true, function(data) {",
           "\tif (data.error !== TcHmi.Errors.NONE) {",
           "        console.error('Error writing to symbol:', data.error);",
           "    } else {",
-          "        console.log(`Turned e_stop off`);",
+          "        console.log(`Resetting system`);",
           "    }",
           "});"
         ],

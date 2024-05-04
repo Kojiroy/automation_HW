@@ -2651,6 +2651,26 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.GVL_Var.bLeakDetected": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::GVL_Var::bLeakDetected",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.GVL_Var.bReset": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::GVL_Var::bReset",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
         "PLC1.GVL_Var.nPressure": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2712,21 +2732,31 @@
             },
             "USEMAPPING": true
         },
-        "PLC1.MAIN.aPoints": {
-            "ACCESS": 3,
-            "DOMAIN": "ADS",
-            "DYNAMIC": true,
-            "MAPPING": "PLC1::MAIN::aPoints",
-            "SCHEMA": {
-                "$ref": "tchmi:server#/definitions/PLC1.ARRAY_1..2_1..100_OF-INT"
-            },
-            "USEMAPPING": true
-        },
         "PLC1.MAIN.bEmergencyStopPump": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
             "DYNAMIC": true,
             "MAPPING": "PLC1::MAIN::bEmergencyStopPump",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.bManualPump": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::bManualPump",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/BOOL"
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.bManualRelease": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::bManualRelease",
             "SCHEMA": {
                 "$ref": "tchmi:general#/definitions/BOOL"
             },
@@ -3960,6 +3990,8 @@
                 "LocalizeText": 3,
                 "Login": 3,
                 "Logout": 3,
+                "PLC1.GVL_Var.bLeakDetected": 3,
+                "PLC1.GVL_Var.bReset": 3,
                 "PLC1.GVL_Var.nPressure": 3,
                 "PLC1.MAIN.Pump.bOn": 3,
                 "PLC1.MAIN.STOP_PRESSURE": 3,
@@ -3968,6 +4000,8 @@
                 "PLC1.MAIN.aGraphPoints": 3,
                 "PLC1.MAIN.aPoints": 3,
                 "PLC1.MAIN.bEmergencyStopPump": 3,
+                "PLC1.MAIN.bManualPump": 3,
+                "PLC1.MAIN.bManualRelease": 3,
                 "PLC1.MAIN.bPumpState": 3,
                 "PLC1.MAIN.bStartStop": 3,
                 "PLC1.MAIN.bTurnPumpControllerOn": 3,

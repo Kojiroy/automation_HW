@@ -14,7 +14,7 @@
     "showAxis": true,
     "position": "Left",
     "mainTickMinValue": 0.0,
-    "mainTickMaxValue": 10.0,
+    "mainTickMaxValue": 50.0,
     "showLabels": true,
     "showAxisName": true,
     "axisName": "y-axis 1",

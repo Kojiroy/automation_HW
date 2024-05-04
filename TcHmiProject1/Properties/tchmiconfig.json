@@ -55,6 +55,11 @@
       "name": "ReadablePressureData.js",
       "description": "",
       "type": "JavaScript"
+    },
+    {
+      "name": "StatusBg.js",
+      "description": "",
+      "type": "JavaScript"
     }
   ],
   "userControls": [],
@@ -92,6 +97,9 @@
   "userFunctions": [
     {
       "url": "ReadablePressureData.js"
+    },
+    {
+      "url": "StatusBg.js"
     }
   ],
   "symbols": {
