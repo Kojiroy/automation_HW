@@ -1,5 +1,6 @@
 ![image](images/general_page.jpg)
 ![image](images/analysis_page.jpg)
+Video of the HMI in action: https://drive.google.com/file/d/1Lbk3OYMxQW990w1GKanXsBM9RZjLE0gA/view?usp=sharing
 ## Overview
 - Basic UI
     - The colored status textbox on the top left indicates the state of the main loop. It can be in eight possible: IDLING, PUMPING, M_PUMPING (manual pumping), M_RELEASING (manual releasing), E_STOPPED, LEAK!, SMT_BROKE (something broke in hardware), and CtrlErr! (error in PID Controller). The textbox should turn red if the program enters E_STOPPED, LEAK, or SMT_BROKE. Otherwise, the textbox should be green, indicating that things are nominal. 
